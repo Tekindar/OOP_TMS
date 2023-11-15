@@ -5,10 +5,12 @@ import java.util.Scanner;
 
 public class TestController {
 
-    private static boolean CSTValidation(String[] keywords){
+
+    private static boolean CSTValidation(String[] keywords, TMS tms){
+        // still need to check for keywords[5] to see if not properly ended
         // validating name
         String key = keywords[1];
-        if(key.isEmpty()||key.charAt(0)>='0'&&key.charAt(0)<='9'||key.length()>8)
+        if(tms.taskExist(key)||key.isEmpty()||key.charAt(0)>='0'&&key.charAt(0)<='9'||key.length()>8)
             return false;
         for(int i=0;i<key.length();i++){
             if((key.charAt(i)<'a'||key.charAt(i)>'z')&&
@@ -35,13 +37,16 @@ public class TestController {
             return false;
         }
 
+        String[] prs = keywords[4].split(",");
+        for(String s:prs) if(!tms.taskExist(s)) return false;
+
         return true;
     }
 
     public static void main(String[] args) {
         TMS tms = new TMS();
         Scanner scanner = new Scanner(System.in);
-        String[] keywords = {"","","",""};
+        String[] keywords = {"","","","",""};
         while(true) {
             String input = scanner.nextLine();
             if (input.equals("exit")) break;
@@ -49,7 +54,7 @@ public class TestController {
             for (String key : input.split(" ")) keywords[i++]=key;
             switch(keywords[0]){
                 case "CreateSimpleTask":
-                    if(CSTValidation(keywords)){
+                    if(CSTValidation(keywords, tms)){
                         tms.CreateSimpleTask(keywords);
                     }else System.out.println("Input Error");
                     break;

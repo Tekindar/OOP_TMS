@@ -1,4 +1,12 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
-public class Task {
+abstract class Task {
+    String name;
+    String description;
+    double duration;
+    double completion;
+    String[] prerequisite;
+
+    Task(){}
+
 }

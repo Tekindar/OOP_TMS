@@ -80,13 +80,18 @@ public class TMS {
             String[] tempPR = keywords[4].split(",");
             for(String s:tempPR){
                 for(Task t:tasks){
-                    if(task.prerequisite.contains(t)) {
-                        System.out.println("Repeated Prerequisite, Automatically Removed Duplication");
-                        continue;
+                    if(t.name.equals(s)) {
+                        if (task.prerequisite.contains(t)) {
+                            System.out.println("Repeated Prerequisite, Automatically Removed Duplication");
+                        }
+                        else {
+                            task.prerequisite.add(t);
+                        }
                     }
-                    if(t.name.equals(s))task.prerequisite.add(t);
+
                 }
             }
+            task.initializeTask();
             tasks.add(task);
             System.out.println("Simple Task Created");
         }

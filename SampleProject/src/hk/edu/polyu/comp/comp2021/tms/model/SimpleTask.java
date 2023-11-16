@@ -9,21 +9,22 @@ public class SimpleTask extends Task{
         description = keywords[2];
         duration = Double.parseDouble(keywords[3]);
         prerequisite = new LinkedList<>();
+        IndirectPrerequisite = new LinkedList<>();
         completion=0;
-        initializeTask();
     }
 
     void initializeTask(){
-        calculatePrerequisite(this);
+        for(Task t:prerequisite)calculatePrerequisite(t);
         for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
         this.completion+=this.duration;
+        System.out.println(completion);
     }
 
     void calculatePrerequisite(Task t){
         if(t.prerequisite.isEmpty())return;
         for(Task task:t.prerequisite){
             this.prerequisite.removeIf(pr -> pr.equals(task));
-            this.IndirectPrerequisite.add(task);
+            if(!this.IndirectPrerequisite.contains(task)) this.IndirectPrerequisite.add(task);
             calculatePrerequisite(task);
         }
     }

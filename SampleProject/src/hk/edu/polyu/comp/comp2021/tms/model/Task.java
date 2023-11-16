@@ -1,12 +1,16 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
+import java.util.LinkedList;
+
 abstract class Task {
     String name;
     String description;
     double duration;
     double completion;
-    String[] prerequisite;
+    LinkedList<Task> prerequisite;
 
-    Task(){}
+    Task(){
+
+    }
 
 }

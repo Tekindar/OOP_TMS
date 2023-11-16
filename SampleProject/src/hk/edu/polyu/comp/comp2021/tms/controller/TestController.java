@@ -29,6 +29,10 @@ public class TestController {
                     break;
                 case "GUI":
                     GUI.display(true);
+                    System.out.println("Please Click Manually");
+                    break;
+                case "command":
+                    GUI.display(false);
                     break;
                 default:
                     System.out.println("Invalid Operation Name");

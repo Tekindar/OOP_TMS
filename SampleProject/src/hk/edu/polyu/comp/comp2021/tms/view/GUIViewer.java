@@ -38,7 +38,7 @@ public class GUIViewer {
         CST.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                f.setVisible(false);
+                display(false);
                 CreateSimpleTask();
             }
         });
@@ -48,8 +48,6 @@ public class GUIViewer {
         f.setLayout(null);
         f.add(quit);
         f.add(CST);
-
-        f.setVisible(true);
     }
 
     void CreateSimpleTask(){
@@ -112,6 +110,7 @@ public class GUIViewer {
         CSTFrame.add(CSTdurationLabel);
         CSTFrame.add(SL_PR);
 
+        CSTFrame.setVisible(true);
     }
 
     void SelectPrerequisite(TMS tms){
@@ -146,10 +145,11 @@ public class GUIViewer {
     }
 
     public void display(boolean visibility){
-        this.f.setVisible(visibility);
+        f.setVisible(visibility);
     }
     public GUIViewer(TMS tms){
         this.tms = tms;
         this.mainFrame();
+        display(false);
     }
 }

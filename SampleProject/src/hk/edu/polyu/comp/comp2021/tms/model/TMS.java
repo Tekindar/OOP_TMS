@@ -3,7 +3,8 @@ import java.util.LinkedList;
 
 public class TMS {
 
-    LinkedList<Task> tasks;
+    public LinkedList<Task> tasks;
+    private int TaskNumber;
     public TMS(){
         tasks = new LinkedList<>();
     }
@@ -93,9 +94,19 @@ public class TMS {
             }
             task.initializeTask();
             tasks.add(task);
+            TaskNumber++;
             System.out.println("Simple Task Created");
         }
 
+    }
+
+    public String[] getTaskNames(){
+        String[] temp = new String[TaskNumber];
+        int index = 0;
+        for(Task t:tasks){
+            temp[index++] = t.name;
+        }
+        return temp;
     }
 
 }

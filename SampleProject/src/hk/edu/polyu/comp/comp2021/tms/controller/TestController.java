@@ -1,5 +1,7 @@
 package hk.edu.polyu.comp.comp2021.tms.controller;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
+import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
+
 import java.util.Scanner;
 
 /*
@@ -7,11 +9,12 @@ import java.util.Scanner;
  */
 public class TestController {
 
-    static String[] blankKeys = {"","","","",""};
+    static String[] blankKeys = {"","","","",""};//要改 auto set size by split
 
 
     public static void main(String[] args) {
         TMS tms = new TMS();
+        GUIViewer GUI = new GUIViewer(tms);
         Scanner scanner = new Scanner(System.in);
         String[] keywords;
         while(true) {
@@ -24,8 +27,8 @@ public class TestController {
                 case "CreateSimpleTask":
                     tms.CreateSimpleTask(keywords);
                     break;
-                case "CreateCompositeTask":
-
+                case "GUI":
+                    GUI.display(true);
                     break;
                 default:
                     System.out.println("Invalid Operation Name");

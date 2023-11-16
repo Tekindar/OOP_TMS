@@ -8,6 +8,7 @@ import javax.swing.*;
 public class GUIViewer {
     JFrame f,CSTFrame,SL_PR;
     TMS tms;
+    String TemporaryPrerequisite = ",";
     Font UniFont(int size){
         return new Font("LEMON", Font.BOLD, size);
     }
@@ -39,7 +40,8 @@ public class GUIViewer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 display(false);
-                CreateSimpleTask();
+                if(CSTFrame!=null) CSTFrame.setVisible(true);
+                else CreateSimpleTask();
             }
         });
 
@@ -53,6 +55,7 @@ public class GUIViewer {
     void CreateSimpleTask(){
         // Components
         CSTFrame = new JFrame();
+        SelectPrerequisite(tms);
         JLabel CSTTitle = new JLabel("CREATE SIMPLE TASK");
         JLabel CSTnameLabel = new JLabel("Task Name");
         JLabel CSTdescriptLabel = new JLabel("Task Description");
@@ -60,8 +63,9 @@ public class GUIViewer {
         JTextField CSTName = new JTextField();
         JTextField CSTDescript = new JTextField();
         JTextField CSTDuration = new JTextField();
-        JButton SL_PR = new JButton("Select Prerequisite");
-        JButton CSTCreate = new JButton();
+        JButton SLPR = new JButton("Select Prerequisite");
+        JButton CSTCreate = new JButton("Create");
+        JButton BackMain = new JButton("Return Main");
 
         // Properties
         CSTFrame.setLayout(null);
@@ -91,14 +95,45 @@ public class GUIViewer {
         CSTdurationLabel.setLocation(60,270);
         CSTdurationLabel.setFont(UniFont(10));
 
-        SL_PR.setSize(190,60);
-        SL_PR.setLocation(350, 110);
-        SL_PR.addActionListener(new ActionListener() {
+        SLPR.setSize(190,60);
+        SLPR.setLocation(350, 110);
+        SLPR.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SelectPrerequisite(tms);
+                SL_PR.setVisible(true);
             }
         });
+
+        BackMain.setSize(190,60);
+        BackMain.setLocation(350, 270);
+        BackMain.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CSTFrame.setVisible(false);
+                resetPrerequisites();
+                display(true);
+            }
+        });
+
+        CSTCreate.setSize(190,60);
+        CSTCreate.setLocation(350, 190);
+        CSTCreate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String a = "CreateSimpleTask "+CSTName.getText()+" "+CSTDescript.getText()+" "+
+                        CSTDuration.getText()+" "+TemporaryPrerequisite;
+                if(a.split(" ").length!=5){
+                    System.out.println("Input Error");
+                }else{
+                    CST(a.split(" "));
+                    CSTName.setText("");
+                    CSTDescript.setText("");
+                    CSTDuration.setText("");
+                }
+                resetPrerequisites();
+            }
+        });
+
 
         // Layout
         CSTFrame.add(CSTTitle);
@@ -108,8 +143,9 @@ public class GUIViewer {
         CSTFrame.add(CSTdescriptLabel);
         CSTFrame.add(CSTDuration);
         CSTFrame.add(CSTdurationLabel);
-        CSTFrame.add(SL_PR);
-
+        CSTFrame.add(SLPR);
+        CSTFrame.add(BackMain);
+        CSTFrame.add(CSTCreate);
         CSTFrame.setVisible(true);
     }
 
@@ -119,21 +155,59 @@ public class GUIViewer {
         SL_PR = new JFrame();
         JPanel panel = new JPanel();
         JScrollPane scrlPane = new JScrollPane(panel);
+        JButton ConfirmPrerequisites = new JButton("Confirm");
 
         // Properties
         SL_PR.setSize(200, 300);
-        panel.setSize(200,taskNames.length*50);
+        panel.setSize(200,taskNames.length*50+60);
+        ConfirmPrerequisites.setSize(200,60);
+        ConfirmPrerequisites.setFont(UniFont(20));
+        ConfirmPrerequisites.setLocation(0,taskNames.length*50);
+        // checkboxes for all existed tasks
         JCheckBox[] boxes = new JCheckBox[taskNames.length];
         for(int i=0;i<taskNames.length;i++){
             boxes[i] = new JCheckBox(taskNames[i]);
         }
+        ConfirmPrerequisites.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(taskNames.length==0)TemporaryPrerequisite=",";
+                else{
+                    boolean flag = true;
+                    String temporaryPrerequisite="";
+                    for(int i=0;i<taskNames.length;i++) if(boxes[i].isSelected()){
+                        if(flag)flag = false;
+                        else temporaryPrerequisite+=",";
+                        temporaryPrerequisite+=taskNames[i];
+                    }
+                    TemporaryPrerequisite = temporaryPrerequisite;
+                }
+
+                SL_PR.setVisible(false);
+            }
+        });
+
+        // Layout
         for(JCheckBox b:boxes){
             panel.add(b);
         }
-
-        // Layout
+        scrlPane.add(ConfirmPrerequisites);
         SL_PR.add(scrlPane);
-        SL_PR.setVisible(true);
+    }
+
+    void resetPrerequisites(){
+        SL_PR.removeAll();
+        SelectPrerequisite(tms);
+        SL_PR.setVisible(false);
+        TemporaryPrerequisite=",";
+    }
+
+    void CST(String[] keywords){
+        tms.CreateSimpleTask(keywords);
+    }
+
+    String getCheckboxes(){
+        return null;
     }
 
     void CreateCompositeTask(){

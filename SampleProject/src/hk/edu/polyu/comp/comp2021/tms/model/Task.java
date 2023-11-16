@@ -8,6 +8,7 @@ abstract class Task {
     double duration;
     double completion;
     LinkedList<Task> prerequisite;
+    LinkedList<Task> IndirectPrerequisite;
 
     Task(){
 

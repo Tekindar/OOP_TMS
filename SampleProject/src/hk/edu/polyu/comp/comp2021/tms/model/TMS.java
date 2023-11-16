@@ -4,7 +4,6 @@ import java.util.LinkedList;
 public class TMS {
 
     LinkedList<Task> tasks;
-    //String tasks = " "; // to be changed
     public TMS(){
         tasks = new LinkedList<>();
     }
@@ -71,14 +70,9 @@ public class TMS {
         return true;
     }
     public boolean taskExist(String s){
-        boolean flag = false;
         if(tasks==null)return false;
-        for(Task t: tasks) {
-            if(s.equals(t.name)) {
-                flag = true; break;
-            }
-        }
-        return flag;
+        for(Task t: tasks) if(s.equals(t.name))return true;
+        return false;
     }
     public void CreateSimpleTask(String[] keywords){
         if(CSTValidation(keywords)){

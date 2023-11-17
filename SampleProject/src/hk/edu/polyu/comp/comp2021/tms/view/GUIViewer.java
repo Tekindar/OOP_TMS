@@ -196,7 +196,7 @@ public class GUIViewer {
         for(JCheckBox b:boxes){
             panel.add(b);
         }
-        scrlPane.add(ConfirmPrerequisites);
+        panel.add(ConfirmPrerequisites);
         SL_PR.add(scrlPane);
     }
 

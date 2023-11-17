@@ -16,10 +16,17 @@ public class TestController {
         String[] keywords;
         while(true) {
             keywords = scanner.nextLine().split(" ");
+            if(keywords.length==0){
+                System.out.println("Invalid Operation Name");
+                continue;
+            }
             if (keywords[0].equals("exit")&&keywords.length==1) break;
             switch(keywords[0]){
-                case "CreateSimpleTask":
+                case "CreatePrimitiveTask":
                     tms.CreateSimpleTask(keywords);
+                    break;
+                case "CreateCompositeTask":
+                    tms.CreateCompositeTask(keywords);
                     break;
                 case "GUI":
                     if(keywords.length>1)break;

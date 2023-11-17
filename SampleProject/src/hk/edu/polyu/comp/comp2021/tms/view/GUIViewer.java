@@ -20,7 +20,7 @@ public class GUIViewer {
         // Components
         f = new JFrame();
         JButton quit = new JButton("Quit");
-        JButton CST = new JButton("CreateSimpleTask");
+        JButton CST = new JButton("CreatePrimitiveTask");
 
         //properties
         quit.setFont(UniFont());
@@ -56,7 +56,7 @@ public class GUIViewer {
         // Components
         CSTFrame = new JFrame();
         SelectPrerequisite(tms);
-        JLabel CSTTitle = new JLabel("CREATE SIMPLE TASK");
+        JLabel CSTTitle = new JLabel("CREATE PRIMITIVE TASK");
         JLabel CSTnameLabel = new JLabel("Task Name");
         JLabel CSTdescriptLabel = new JLabel("Task Description");
         JLabel CSTdurationLabel = new JLabel("Task Duration");
@@ -120,7 +120,7 @@ public class GUIViewer {
         CSTCreate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String a = "CreateSimpleTask "+CSTName.getText()+" "+CSTDescript.getText()+" "+
+                String a = "CreatePrimitiveTask "+CSTName.getText()+" "+CSTDescript.getText()+" "+
                         CSTDuration.getText()+" "+TemporaryPrerequisite;
                 if(a.split(" ").length!=5){
                     System.out.println("Input Error");

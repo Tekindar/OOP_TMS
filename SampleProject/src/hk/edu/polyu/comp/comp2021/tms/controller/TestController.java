@@ -9,27 +9,22 @@ import java.util.Scanner;
  */
 public class TestController {
 
-    static String[] blankKeys = {"","","","",""};//要改 auto set size by split
-
-
     public static void main(String[] args) {
         TMS tms = new TMS();
         GUIViewer GUI = new GUIViewer(tms);
         Scanner scanner = new Scanner(System.in);
         String[] keywords;
         while(true) {
-            keywords = blankKeys.clone();
-            String input = scanner.nextLine();
-            if (input.equals("exit")) break;
-            int i=0;
-            for (String key : input.split(" ")) keywords[i++]=key;
+            keywords = scanner.nextLine().split(" ");
+            if (keywords[0].equals("exit")&&keywords.length==1) break;
             switch(keywords[0]){
                 case "CreateSimpleTask":
                     tms.CreateSimpleTask(keywords);
                     break;
                 case "GUI":
+                    if(keywords.length>1)break;
                     GUI.display(true);
-                    System.out.println("Please Click Manually");
+                    System.out.println("Please Click Window Manually If Not Popped Up");
                     break;
                 case "command":
                     GUI.display(false);

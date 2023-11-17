@@ -159,6 +159,7 @@ public class GUIViewer {
 
         // Properties
         SL_PR.setSize(200, 300);
+        panel.setLayout(null);
         panel.setSize(200,taskNames.length*50+60);
         ConfirmPrerequisites.setSize(200,60);
         ConfirmPrerequisites.setFont(UniFont(20));
@@ -167,6 +168,9 @@ public class GUIViewer {
         JCheckBox[] boxes = new JCheckBox[taskNames.length];
         for(int i=0;i<taskNames.length;i++){
             boxes[i] = new JCheckBox(taskNames[i]);
+            boxes[i].setFont(UniFont(20));
+            boxes[i].setSize(200,50);
+            boxes[i].setLocation(0,i*50);
         }
         ConfirmPrerequisites.addActionListener(new ActionListener() {
             @Override
@@ -188,6 +192,7 @@ public class GUIViewer {
         });
 
         // Layout
+
         for(JCheckBox b:boxes){
             panel.add(b);
         }

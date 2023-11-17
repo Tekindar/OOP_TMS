@@ -24,7 +24,7 @@ public class TMS {
             return false;
         }
 
-        if((key.charAt(0)>='0'&&key.charAt(0)<='9'||key.length()>8)){
+        if(key.charAt(0)>='0'&&key.charAt(0)<='9'||key.length()>8){
             System.out.println("Illegal Task Name");
             return false;
         }

@@ -1,6 +1,9 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
 
+import hk.edu.polyu.comp.comp2021.tms.controller.TestController;
+import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
+
 import java.util.LinkedList;
 
 public class CompositeTask extends Task{
@@ -24,7 +27,7 @@ public class CompositeTask extends Task{
                 }
             }
             if(repeated)subtask.add(TMS.getTask(s));
-            else System.out.println("Repeated Subtask Detected, Automatically Removed Duplication");
+            else GUIViewer.Log("Repeated Subtask Detected, Automatically Removed Duplication", TestController.getIsGUI());
         }
         subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
@@ -64,24 +67,24 @@ public class CompositeTask extends Task{
         }
     }
 
-    public static boolean CCTValidation(String[] keywords){
+    public static boolean CCTValidation(String[] keywords, boolean isGUI){
         if(keywords.length != 4){
-            System.out.print("Invalid Inputs");
+            GUIViewer.Log("Invalid Inputs", isGUI);
             return false;
         }
         if(keywords[1].isEmpty()||keywords[2].isEmpty()||keywords[3].isEmpty()){
-            System.out.println("Missing Input");
+            GUIViewer.Log("Missing Input", isGUI);
             return false;
         }
         // validating name
         String key = keywords[1];
         if(TMS.taskExist(key)){
-            System.out.println("Task Existed");
+            GUIViewer.Log("Task Existed", isGUI);
             return false;
         }
 
         if((key.charAt(0)>='0'&&key.charAt(0)<='9'||key.length()>8)){
-            System.out.println("Illegal Task Name");
+            GUIViewer.Log("Illegal Task Name", isGUI);
             return false;
         }
 
@@ -89,7 +92,7 @@ public class CompositeTask extends Task{
             if((key.charAt(i)<'a'||key.charAt(i)>'z')&&
                     (key.charAt(i)<'A'||key.charAt(i)>'Z')&&
                     (key.charAt(i)<'0'||key.charAt(i)>'9')) {
-                System.out.println("Illegal Task Name");
+                GUIViewer.Log("Illegal Task Name", isGUI);
                 return false;
             }
         }
@@ -101,26 +104,26 @@ public class CompositeTask extends Task{
                     (key.charAt(i)<'A'||key.charAt(i)>'Z')&&
                     (key.charAt(i)<'0'||key.charAt(i)>'9')&&
                     key.charAt(i)!='-') {
-                System.out.println("Illegal Description");
+                GUIViewer.Log("Illegal Description", isGUI);
                 return false;
             }
         }
 
         String[] prs = keywords[3].split(",");
         if(prs.length == 0||prs[0].equals(",")) {
-            System.out.println("A Composite Task Needs To Have At Least One Subtask");
+            GUIViewer.Log("A Composite Task Needs To Have At Least One Subtask", isGUI);
             return false;
         }
         for(String s:prs) {
             Task t = TMS.getTask(s);
             if(t!=null){
                 if(t.getSub()){
-                    System.out.println("An Appointed Task Has Been Used As Subtask Already");
+                    GUIViewer.Log("An Appointed Task Has Been Used As Subtask Already", isGUI);
                     return false;
                 }
             }
             else{
-                System.out.println("Illegal Subtasks");
+                GUIViewer.Log("Illegal Subtasks", isGUI);
                 return false;
             }
         }

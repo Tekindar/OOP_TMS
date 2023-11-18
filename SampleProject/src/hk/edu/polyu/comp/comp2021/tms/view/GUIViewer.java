@@ -1,4 +1,5 @@
 package hk.edu.polyu.comp.comp2021.tms.view;
+import hk.edu.polyu.comp.comp2021.tms.controller.TestController;
 import hk.edu.polyu.comp.comp2021.tms.model.*;
 
 import java.awt.*;
@@ -121,7 +122,7 @@ public class GUIViewer {
             String a = "CreatePrimitiveTask "+CPT_Name.getText()+" "+CPT_Description.getText()+" "+
                     CPT_Duration.getText()+" "+TemporarySelection;
             if(a.split(" ").length!=5){
-                System.out.println("Input Error");
+                Log("Input Error", true);
             }else{
                 CPT(a.split(" "));
             }
@@ -197,7 +198,7 @@ public class GUIViewer {
         CCTCreate.addActionListener(e -> {
             String a = "CreateCompositeTask "+CCT_Name.getText()+" "+CCT_Description.getText()+" "+TemporarySelection;
             if(a.split(" ").length!=4){
-                System.out.println("Input Error");
+                Log("Input Error", true);
             }else{
                 CCT(a.split(" "));
             }
@@ -276,10 +277,10 @@ public class GUIViewer {
     }
     
     void CPT(String[] keywords){
-        tms.CreatePrimitiveTask(keywords);
+        tms.CreatePrimitiveTask(keywords,true);
     }
     void CCT(String[] keywords){
-        tms.CreateCompositeTask(keywords);
+        tms.CreateCompositeTask(keywords,true);
     }
     String[] getValidSubtask(String[] allTask){
         StringBuilder validTask = new StringBuilder(" ");
@@ -323,5 +324,10 @@ public class GUIViewer {
         this.tms = tms;
         this.mainFrame();
         display(false);
+    }
+
+    public static void Log(String message, boolean GUI){
+        if(GUI) JOptionPane.showMessageDialog(null,message,"Task Management System", JOptionPane.INFORMATION_MESSAGE);
+        else System.out.println(message);
     }
 }

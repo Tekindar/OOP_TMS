@@ -1,5 +1,7 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
+import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
+
 public abstract class Task {
     String name;
     String description;
@@ -15,5 +17,6 @@ public abstract class Task {
     public boolean getSub(){
         return Boolean.TRUE.equals(isSub);
     }
+
 
 }

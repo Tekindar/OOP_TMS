@@ -1,4 +1,6 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
+import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
+
 import java.util.LinkedList;
 
 public class TMS {
@@ -9,32 +11,27 @@ public class TMS {
         tasks = new LinkedList<>();
     }
 
-    boolean CSTValidation(String[] keywords) {
-        return PrimitiveTask.CSTValidation(keywords);
-    }
-    boolean CCTValidation(String[] keywords) {
-        return CompositeTask.CCTValidation(keywords);
-    }
+
     public static boolean taskExist(String s){
         if(tasks==null)return false;
         for(Task t: tasks) if(s.equals(t.name))return true;
         return false;
     }
-    public void CreatePrimitiveTask(String[] keywords){
-        if(CSTValidation(keywords)){
+    public void CreatePrimitiveTask(String[] keywords, boolean isGUI){
+        if(PrimitiveTask.CPTValidation(keywords, isGUI)){
             PrimitiveTask task = new PrimitiveTask(keywords);
             tasks.add(task);
             TaskNumber++;
-            System.out.println("Primitive Task Created");
+            GUIViewer.Log("Primitive Task Created", isGUI);
         }
 
     }
-    public void CreateCompositeTask(String[] keywords){
-        if(CCTValidation(keywords)){
+    public void CreateCompositeTask(String[] keywords, boolean isGUI){
+        if(CompositeTask.CCTValidation(keywords, isGUI)){
             CompositeTask task = new CompositeTask(keywords);
             tasks.add(task);
             TaskNumber++;
-            System.out.println("Composite Task Created");
+            GUIViewer.Log("Composite Task Created", isGUI);
         }
     }
 

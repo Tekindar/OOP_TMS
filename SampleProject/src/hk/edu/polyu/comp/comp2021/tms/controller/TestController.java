@@ -23,7 +23,7 @@ public class TestController {
             if (keywords[0].equals("exit")&&keywords.length==1) break;
             switch(keywords[0]){
                 case "CreatePrimitiveTask":
-                    tms.CreateSimpleTask(keywords);
+                    tms.CreatePrimitiveTask(keywords);
                     break;
                 case "CreateCompositeTask":
                     tms.CreateCompositeTask(keywords);

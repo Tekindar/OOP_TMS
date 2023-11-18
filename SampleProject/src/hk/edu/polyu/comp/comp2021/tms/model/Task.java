@@ -7,11 +7,18 @@ public abstract class Task {
     String description;
     double duration;
     double completion;
+    private static boolean isSub;
     LinkedList<Task> prerequisite;
     LinkedList<Task> IndirectPrerequisite;
 
     Task(){
-
+        isSub = false;
+    }
+    public void setSub(boolean s){
+        isSub = s;
+    }
+    public boolean getSub(){
+        return Boolean.TRUE.equals(isSub);
     }
 
 }

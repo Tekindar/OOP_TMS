@@ -10,16 +10,19 @@ public class TMS {
     }
 
     boolean CSTValidation(String[] keywords) {
-        return SimpleTask.CSTValidation(keywords);
+        return PrimitiveTask.CSTValidation(keywords);
+    }
+    boolean CCTValidation(String[] keywords) {
+        return CompositeTask.CCTValidation(keywords);
     }
     public static boolean taskExist(String s){
         if(tasks==null)return false;
         for(Task t: tasks) if(s.equals(t.name))return true;
         return false;
     }
-    public void CreateSimpleTask(String[] keywords){
+    public void CreatePrimitiveTask(String[] keywords){
         if(CSTValidation(keywords)){
-            SimpleTask task = new SimpleTask(keywords);
+            PrimitiveTask task = new PrimitiveTask(keywords);
             tasks.add(task);
             TaskNumber++;
             System.out.println("Primitive Task Created");
@@ -27,11 +30,11 @@ public class TMS {
 
     }
     public void CreateCompositeTask(String[] keywords){
-        if(CompositeTask.CCTValidation(keywords)){
+        if(CCTValidation(keywords)){
             CompositeTask task = new CompositeTask(keywords);
             tasks.add(task);
             TaskNumber++;
-            System.out.print("Composite Task Created");
+            System.out.println("Composite Task Created");
         }
     }
 

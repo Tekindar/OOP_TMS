@@ -6,9 +6,9 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class GUIViewer {
-    JFrame f,CSTFrame,SL_PR;
+    JFrame f,CPTFrame,CCTFrame,SelectFrame;
     TMS tms;
-    String TemporaryPrerequisite = ",";
+    String TemporarySelection = ",";
     Font UniFont(int size){
         return new Font("LEMON", Font.BOLD, size);
     }
@@ -20,150 +20,222 @@ public class GUIViewer {
         // Components
         f = new JFrame();
         JButton quit = new JButton("Quit");
-        JButton CST = new JButton("CreatePrimitiveTask");
+        JButton CPT = new JButton("CreatePrimitiveTask");
+        JButton CCT = new JButton("CreateCompositeTask");
 
         //properties
         quit.setFont(UniFont());
         quit.setSize(100,100);
         quit.setLocation(350,350);
-        quit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
-                System.exit(0);
-            }
+        quit.addActionListener(e -> {
+            f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
+            System.exit(0);
         });
-        CST.setFont(UniFont(20));
-        CST.setSize(600,100);
-        CST.setLocation(100,50);
-        CST.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                display(false);
-                if(CSTFrame!=null) CSTFrame.setVisible(true);
-                else CreateSimpleTask();
-            }
+        
+        CPT.setFont(UniFont(20));
+        CPT.setSize(600,100);
+        CPT.setLocation(100,50);
+        CPT.addActionListener(e -> {
+            display(false);
+            resetCCT();
+            if(CPTFrame!=null) CPTFrame.setVisible(true);
+            else CreatePrimitiveTask();
+        });
+
+        CCT.setFont(UniFont(20));
+        CCT.setSize(600,100);
+        CCT.setLocation(100,200);
+        CCT.addActionListener(e -> {
+            display(false);
+            resetCPT();
+            if(CCTFrame!=null) CCTFrame.setVisible(true);
+            else CreateCompositeTask();
         });
 
         //layout
         f.setSize(800,800);
         f.setLayout(null);
         f.add(quit);
-        f.add(CST);
+        f.add(CPT);
+        f.add(CCT);
     }
 
-    void CreateSimpleTask(){
+    void CreatePrimitiveTask(){
         // Components
-        CSTFrame = new JFrame();
-        SelectPrerequisite(tms);
-        JLabel CSTTitle = new JLabel("CREATE PRIMITIVE TASK");
-        JLabel CSTnameLabel = new JLabel("Task Name");
-        JLabel CSTdescriptLabel = new JLabel("Task Description");
-        JLabel CSTdurationLabel = new JLabel("Task Duration");
-        JTextField CSTName = new JTextField();
-        JTextField CSTDescript = new JTextField();
-        JTextField CSTDuration = new JTextField();
-        JButton SLPR = new JButton("Select Prerequisite");
-        JButton CSTCreate = new JButton("Create");
+        CPTFrame = new JFrame();
+        SelectTasks(tms,'p');
+        JLabel CPTTitle = new JLabel("CREATE PRIMITIVE TASK");
+        JLabel CPT_nameLabel = new JLabel("Task Name");
+        JLabel CPT_descriptionLabel = new JLabel("Task Description");
+        JLabel CPT_durationLabel = new JLabel("Task Duration");
+        JTextField CPT_Name = new JTextField();
+        JTextField CPT_Description = new JTextField();
+        JTextField CPT_Duration = new JTextField();
+        JButton Select = new JButton("Select Prerequisite");
+        JButton CPTCreate = new JButton("Create");
         JButton BackMain = new JButton("Return Main");
 
         // Properties
-        CSTFrame.setLayout(null);
-        CSTFrame.setSize(600,400);
-        CSTTitle.setSize(500,50);
-        CSTTitle.setFont(UniFont(40));
-        CSTTitle.setLocation(60, 30);
+        CPTFrame.setLayout(null);
+        CPTFrame.setSize(600,400);
+        CPTTitle.setSize(500,50);
+        CPTTitle.setFont(UniFont(40));
+        CPTTitle.setLocation(60, 30);
 
-        CSTName.setFont(UniFont(20));
-        CSTName.setLocation(60,140);
-        CSTName.setSize(240,30);
-        CSTnameLabel.setSize(120,30);
-        CSTnameLabel.setLocation(60,110);
-        CSTnameLabel.setFont(UniFont(10));
+        CPT_Name.setFont(UniFont(20));
+        CPT_Name.setLocation(60,140);
+        CPT_Name.setSize(240,30);
+        CPT_nameLabel.setSize(120,30);
+        CPT_nameLabel.setLocation(60,110);
+        CPT_nameLabel.setFont(UniFont(10));
 
-        CSTDescript.setFont(UniFont(20));
-        CSTDescript.setLocation(60,220);
-        CSTDescript.setSize(240,30);
-        CSTdescriptLabel.setSize(120,30);
-        CSTdescriptLabel.setLocation(60,190);
-        CSTdescriptLabel.setFont(UniFont(10));
+        CPT_Description.setFont(UniFont(20));
+        CPT_Description.setLocation(60,220);
+        CPT_Description.setSize(240,30);
+        CPT_descriptionLabel.setSize(120,30);
+        CPT_descriptionLabel.setLocation(60,190);
+        CPT_descriptionLabel.setFont(UniFont(10));
 
-        CSTDuration.setFont(UniFont(20));
-        CSTDuration.setLocation(60,300);
-        CSTDuration.setSize(240,30);
-        CSTdurationLabel.setSize(120,30);
-        CSTdurationLabel.setLocation(60,270);
-        CSTdurationLabel.setFont(UniFont(10));
+        CPT_Duration.setFont(UniFont(20));
+        CPT_Duration.setLocation(60,300);
+        CPT_Duration.setSize(240,30);
+        CPT_durationLabel.setSize(120,30);
+        CPT_durationLabel.setLocation(60,270);
+        CPT_durationLabel.setFont(UniFont(10));
 
-        SLPR.setSize(190,60);
-        SLPR.setLocation(350, 110);
-        SLPR.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SL_PR.setVisible(true);
-            }
-        });
+        Select.setSize(190,60);
+        Select.setLocation(350, 110);
+        Select.addActionListener(e -> SelectFrame.setVisible(true));
 
         BackMain.setSize(190,60);
         BackMain.setLocation(350, 270);
-        BackMain.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CSTFrame.setVisible(false);
-                resetPrerequisites();
-                display(true);
-            }
+        BackMain.addActionListener(e -> {
+            CPTFrame.setVisible(false);
+            resetSelection('p');
+            display(true);
         });
 
-        CSTCreate.setSize(190,60);
-        CSTCreate.setLocation(350, 190);
-        CSTCreate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String a = "CreatePrimitiveTask "+CSTName.getText()+" "+CSTDescript.getText()+" "+
-                        CSTDuration.getText()+" "+TemporaryPrerequisite;
-                if(a.split(" ").length!=5){
-                    System.out.println("Input Error");
-                }else{
-                    CST(a.split(" "));
-                    CSTName.setText("");
-                    CSTDescript.setText("");
-                    CSTDuration.setText("");
-                }
-                resetPrerequisites();
+        CPTCreate.setSize(190,60);
+        CPTCreate.setLocation(350, 190);
+        CPTCreate.addActionListener(e -> {
+            String a = "CreatePrimitiveTask "+CPT_Name.getText()+" "+CPT_Description.getText()+" "+
+                    CPT_Duration.getText()+" "+TemporarySelection;
+            if(a.split(" ").length!=5){
+                System.out.println("Input Error");
+            }else{
+                CPT(a.split(" "));
             }
+            CPT_Name.setText("");
+            CPT_Description.setText("");
+            CPT_Duration.setText("");
+            resetSelection('p');
         });
 
 
         // Layout
-        CSTFrame.add(CSTTitle);
-        CSTFrame.add(CSTName);
-        CSTFrame.add(CSTnameLabel);
-        CSTFrame.add(CSTDescript);
-        CSTFrame.add(CSTdescriptLabel);
-        CSTFrame.add(CSTDuration);
-        CSTFrame.add(CSTdurationLabel);
-        CSTFrame.add(SLPR);
-        CSTFrame.add(BackMain);
-        CSTFrame.add(CSTCreate);
-        CSTFrame.setVisible(true);
+        CPTFrame.add(CPTTitle);
+        CPTFrame.add(CPT_Name);
+        CPTFrame.add(CPT_nameLabel);
+        CPTFrame.add(CPT_Description);
+        CPTFrame.add(CPT_descriptionLabel);
+        CPTFrame.add(CPT_Duration);
+        CPTFrame.add(CPT_durationLabel);
+        CPTFrame.add(Select);
+        CPTFrame.add(BackMain);
+        CPTFrame.add(CPTCreate);
+        CPTFrame.setVisible(true);
     }
 
-    void SelectPrerequisite(TMS tms){
-        String[] taskNames = tms.getTaskNames().clone();
+    void CreateCompositeTask(){
         // Components
-        SL_PR = new JFrame();
-        JPanel panel = new JPanel();
-        JScrollPane scrlPane = new JScrollPane(panel);
-        JButton ConfirmPrerequisites = new JButton("Confirm");
+        CCTFrame = new JFrame();
+        SelectTasks(tms,'p');
+        JLabel CCTTitle = new JLabel("CREATE COMPOSITE TASK");
+        JLabel CCT_nameLabel = new JLabel("Task Name");
+        JLabel CCT_descriptionLabel = new JLabel("Task Description");
+        JTextField CCT_Name = new JTextField();
+        JTextField CCT_Description = new JTextField();
+        JButton Select = new JButton("Select Subtask");
+        JButton CCTCreate = new JButton("Create");
+        JButton BackMain = new JButton("Return Main");
 
         // Properties
-        SL_PR.setSize(200, 300);
+        CCTFrame.setLayout(null);
+        CCTFrame.setSize(600,400);
+        CCTTitle.setSize(500,50);
+        CCTTitle.setFont(UniFont(40));
+        CCTTitle.setLocation(60, 30);
+
+        CCT_Name.setFont(UniFont(20));
+        CCT_Name.setLocation(60,140);
+        CCT_Name.setSize(240,30);
+        CCT_nameLabel.setSize(120,30);
+        CCT_nameLabel.setLocation(60,110);
+        CCT_nameLabel.setFont(UniFont(10));
+
+        CCT_Description.setFont(UniFont(20));
+        CCT_Description.setLocation(60,220);
+        CCT_Description.setSize(240,30);
+        CCT_descriptionLabel.setSize(120,30);
+        CCT_descriptionLabel.setLocation(60,190);
+        CCT_descriptionLabel.setFont(UniFont(10));
+
+        Select.setSize(190,60);
+        Select.setLocation(350, 110);
+        Select.addActionListener(e -> SelectFrame.setVisible(true));
+
+        BackMain.setSize(190,60);
+        BackMain.setLocation(350, 270);
+        BackMain.addActionListener(e -> {
+            CCTFrame.setVisible(false);
+            resetSelection('c');
+            display(true);
+        });
+
+        CCTCreate.setSize(190,60);
+        CCTCreate.setLocation(350, 190);
+        CCTCreate.addActionListener(e -> {
+            String a = "CreateCompositeTask "+CCT_Name.getText()+" "+CCT_Description.getText()+" "+TemporarySelection;
+            if(a.split(" ").length!=4){
+                System.out.println("Input Error");
+            }else{
+                CCT(a.split(" "));
+            }
+            CCT_Name.setText("");
+            CCT_Description.setText("");
+            resetSelection('c');
+        });
+
+
+        // Layout
+        CCTFrame.add(CCTTitle);
+        CCTFrame.add(CCT_Name);
+        CCTFrame.add(CCT_nameLabel);
+        CCTFrame.add(CCT_Description);
+        CCTFrame.add(CCT_descriptionLabel);
+        CCTFrame.add(Select);
+        CCTFrame.add(BackMain);
+        CCTFrame.add(CCTCreate);
+        CCTFrame.setVisible(true);
+    }
+
+    void SelectTasks(TMS tms, char operation){
+        String[] taskNames;
+        if(operation=='c') taskNames = getValidSubtask(tms.getTaskNames()).clone();
+        else taskNames = tms.getTaskNames().clone();
+        // Components
+        SelectFrame = new JFrame();
+        JPanel panel = new JPanel();
+        JScrollPane SRLPane = new JScrollPane(panel);
+        JButton ConfirmSelection = new JButton("Confirm");
+
+        // Properties
+        SelectFrame.setSize(200, 300);
         panel.setLayout(null);
         panel.setSize(200,taskNames.length*50+60);
-        ConfirmPrerequisites.setSize(200,60);
-        ConfirmPrerequisites.setFont(UniFont(20));
-        ConfirmPrerequisites.setLocation(0,taskNames.length*50);
+        ConfirmSelection.setSize(200,60);
+        ConfirmSelection.setFont(UniFont(20));
+        ConfirmSelection.setLocation(0,taskNames.length*50);
         // checkboxes for all existed tasks
         JCheckBox[] boxes = new JCheckBox[taskNames.length];
         for(int i=0;i<taskNames.length;i++){
@@ -172,23 +244,9 @@ public class GUIViewer {
             boxes[i].setSize(200,50);
             boxes[i].setLocation(0,i*50);
         }
-        ConfirmPrerequisites.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(taskNames.length==0)TemporaryPrerequisite=",";
-                else{
-                    boolean flag = true;
-                    String temporaryPrerequisite="";
-                    for(int i=0;i<taskNames.length;i++) if(boxes[i].isSelected()){
-                        if(flag)flag = false;
-                        else temporaryPrerequisite+=",";
-                        temporaryPrerequisite+=taskNames[i];
-                    }
-                    TemporaryPrerequisite = temporaryPrerequisite;
-                }
-
-                SL_PR.setVisible(false);
-            }
+        ConfirmSelection.addActionListener(e -> {
+            getCheckboxes(boxes, taskNames);
+            SelectFrame.setVisible(false);
         });
 
         // Layout
@@ -196,32 +254,60 @@ public class GUIViewer {
         for(JCheckBox b:boxes){
             panel.add(b);
         }
-        panel.add(ConfirmPrerequisites);
-        SL_PR.add(scrlPane);
+        panel.add(ConfirmSelection);
+        SelectFrame.add(SRLPane);
+    }
+    
+    void resetSelection(char operation){
+        SelectFrame.removeAll();
+        SelectTasks(tms,operation);
+        SelectFrame.setVisible(false);
+        TemporarySelection=",";
+    }
+    
+    void resetCPT(){
+        if(CPTFrame!=null)CPTFrame.removeAll();
+        CPTFrame=null;
     }
 
-    void resetPrerequisites(){
-        SL_PR.removeAll();
-        SelectPrerequisite(tms);
-        SL_PR.setVisible(false);
-        TemporaryPrerequisite=",";
+    void resetCCT(){
+        if(CCTFrame!=null)CCTFrame.removeAll();
+        CCTFrame=null;
+    }
+    
+    void CPT(String[] keywords){
+        tms.CreatePrimitiveTask(keywords);
+    }
+    void CCT(String[] keywords){
+        tms.CreateCompositeTask(keywords);
+    }
+    String[] getValidSubtask(String[] allTask){
+        StringBuilder validTask = new StringBuilder();
+        for(String s:allTask){
+            Task t = TMS.getTask(s);
+            if(t!=null){
+                if(!t.getSub()) validTask.append(" ").append(s);
+            }
+        }
+        return validTask.toString().split(" ");
+    }
+    void getCheckboxes(JCheckBox[] boxes, String[] taskNames){
+        if(taskNames.length==0)TemporarySelection=",";
+        else{
+            boolean flag = true;
+            StringBuilder Temporary= new StringBuilder();
+            for(int i=0;i<taskNames.length;i++) if(boxes[i].isSelected()){
+                if(flag)flag = false;
+                else Temporary.append(",");
+                Temporary.append(taskNames[i]);
+            }
+            TemporarySelection = Temporary.toString();
+        }
     }
 
-    void CST(String[] keywords){
-        tms.CreateSimpleTask(keywords);
-    }
+    
 
-    String getCheckboxes(){
-        return null;
-    }
-
-    void CreateCompositeTask(){
-
-    }
-
-    void DeleteTask(){
-
-    }
+    //void DeleteTask(){}
 
     public void display(boolean visibility){
         f.setVisible(visibility);

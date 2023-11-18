@@ -12,6 +12,7 @@ public class CompositeTask extends Task{
         subtask = new LinkedList<>();
         duration = 0;
         completion = 0;
+        setSub(false);
         for(String s:keywords[3].split(",")){
             boolean repeated = true;
             for(Task t:subtask){
@@ -49,7 +50,7 @@ public class CompositeTask extends Task{
 
 
     public static boolean CCTValidation(String[] keywords){
-        if(keywords.length != 3){
+        if(keywords.length != 4){
             System.out.print("Invalid Inputs");
         }
         if(keywords[1].isEmpty()||keywords[2].isEmpty()||keywords[3].isEmpty()){
@@ -92,11 +93,19 @@ public class CompositeTask extends Task{
         String[] prs = keywords[3].split(",");
         if(prs.length < 2) return false;
         for(String s:prs) {
-            if(!TMS.taskExist(s)) {
+            Task t = TMS.getTask(s);
+            if(t!=null){
+                if(t.getSub()){
+                    System.out.println("An Appointed Task Has Been Used As Subtask Already");
+                    return false;
+                }
+            }
+            else{
                 System.out.println("Illegal Subtasks");
                 return false;
             }
         }
         return true;
     }
+
 }

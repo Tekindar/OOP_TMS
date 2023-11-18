@@ -2,14 +2,15 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 
 import java.util.LinkedList;
 
-public class SimpleTask extends Task{
+public class PrimitiveTask extends Task{
 
-    SimpleTask(String[] keywords){
+    PrimitiveTask(String[] keywords){
         name = keywords[1];
         description = keywords[2];
         duration = Double.parseDouble(keywords[3]);
         prerequisite = new LinkedList<>();
         IndirectPrerequisite = new LinkedList<>();
+        setSub(false);
 
         for(String s:keywords[4].split(",")) {
             boolean repeated = true;
@@ -119,5 +120,6 @@ public class SimpleTask extends Task{
         }
         return true;
     }
+
 
 }

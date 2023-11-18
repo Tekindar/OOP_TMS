@@ -4,6 +4,9 @@ import java.util.LinkedList;
 
 public class PrimitiveTask extends Task{
 
+    LinkedList<Task> prerequisite;
+    LinkedList<Task> IndirectPrerequisite;
+
     PrimitiveTask(String[] keywords){
         name = keywords[1];
         description = keywords[2];
@@ -45,8 +48,8 @@ public class PrimitiveTask extends Task{
             }
         }
         else{
-            if(t.prerequisite.isEmpty())return;
-            for(Task task:t.prerequisite){
+            if(((PrimitiveTask)t).prerequisite.isEmpty())return;
+            for(Task task:((PrimitiveTask)t).prerequisite){
                 // delete if task appears in prerequisite of subtasks
                 this.prerequisite.removeIf(pr -> pr.equals(task));
                 if(!this.IndirectPrerequisite.contains(task)) this.IndirectPrerequisite.add(task);

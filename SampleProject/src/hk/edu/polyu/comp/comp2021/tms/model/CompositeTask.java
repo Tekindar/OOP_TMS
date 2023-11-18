@@ -6,10 +6,12 @@ import java.util.LinkedList;
 public class CompositeTask extends Task{
 
     LinkedList<Task> subtask;
+    LinkedList<Task> AllSubtask;
     CompositeTask(String[] keywords){
         name = keywords[1];
         description = keywords[2];
         subtask = new LinkedList<>();
+        AllSubtask = new LinkedList<>();
         duration = 0;
         completion = 0;
         setSub(false);
@@ -24,12 +26,16 @@ public class CompositeTask extends Task{
             if(repeated)subtask.add(TMS.getTask(s));
             else System.out.println("Repeated Subtask Detected, Automatically Removed Duplication");
         }
+        subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
-
+        System.out.println(duration);
     }
 
     void initializeTask(){
-        for(Task t: subtask) this.completion = Math.max(this.completion, t.completion);
+        for(Task t: subtask){
+            this.completion = Math.max(this.completion, t.completion);
+            t.setSub(true);
+        }
         for(Task t:subtask) DurationCalculation(t,0,0);
     }
 
@@ -41,17 +47,27 @@ public class CompositeTask extends Task{
         }
         else {
             parentTime += t.duration;
-            if(subtask.contains(t))tempHigh = parentTime;
-            for(Task pr:t.prerequisite) DurationCalculation(pr, parentTime, tempHigh);
-            if(t.prerequisite.isEmpty()) this.duration = Math.min(this.duration,tempHigh);
+            if(AllSubtask.contains(t))tempHigh = parentTime;
+            for(Task pr:((PrimitiveTask)t).prerequisite) DurationCalculation(pr, parentTime, tempHigh);
+            if(((PrimitiveTask)t).prerequisite.isEmpty()) this.duration = Math.max(this.duration,tempHigh);
         }
     }
 
-
+    void subtaskCalculate(LinkedList<Task> sub){
+        for(Task t:sub){
+            if(t.getClass().equals(CompositeTask.class)){
+                subtaskCalculate(((CompositeTask) t).subtask);
+            }
+            else{
+                AllSubtask.add(t);
+            }
+        }
+    }
 
     public static boolean CCTValidation(String[] keywords){
         if(keywords.length != 4){
             System.out.print("Invalid Inputs");
+            return false;
         }
         if(keywords[1].isEmpty()||keywords[2].isEmpty()||keywords[3].isEmpty()){
             System.out.println("Missing Input");
@@ -91,7 +107,10 @@ public class CompositeTask extends Task{
         }
 
         String[] prs = keywords[3].split(",");
-        if(prs.length < 2) return false;
+        if(prs.length == 0||prs[0].equals(",")) {
+            System.out.println("A Composite Task Needs To Have At Least One Subtask");
+            return false;
+        }
         for(String s:prs) {
             Task t = TMS.getTask(s);
             if(t!=null){
@@ -107,5 +126,6 @@ public class CompositeTask extends Task{
         }
         return true;
     }
+
 
 }

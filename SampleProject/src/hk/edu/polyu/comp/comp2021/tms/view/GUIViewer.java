@@ -149,7 +149,7 @@ public class GUIViewer {
     void CreateCompositeTask(){
         // Components
         CCTFrame = new JFrame();
-        SelectTasks(tms,'p');
+        SelectTasks(tms,'c');
         JLabel CCTTitle = new JLabel("CREATE COMPOSITE TASK");
         JLabel CCT_nameLabel = new JLabel("Task Name");
         JLabel CCT_descriptionLabel = new JLabel("Task Description");
@@ -221,8 +221,8 @@ public class GUIViewer {
 
     void SelectTasks(TMS tms, char operation){
         String[] taskNames;
-        if(operation=='c') taskNames = getValidSubtask(tms.getTaskNames()).clone();
-        else taskNames = tms.getTaskNames().clone();
+        if(operation=='c') taskNames = getValidSubtask(tms.getTaskNames());
+        else taskNames = tms.getTaskNames();
         // Components
         SelectFrame = new JFrame();
         JPanel panel = new JPanel();
@@ -259,10 +259,10 @@ public class GUIViewer {
     }
     
     void resetSelection(char operation){
+        TemporarySelection=",";
         SelectFrame.removeAll();
         SelectTasks(tms,operation);
         SelectFrame.setVisible(false);
-        TemporarySelection=",";
     }
     
     void resetCPT(){
@@ -282,11 +282,18 @@ public class GUIViewer {
         tms.CreateCompositeTask(keywords);
     }
     String[] getValidSubtask(String[] allTask){
-        StringBuilder validTask = new StringBuilder();
+        StringBuilder validTask = new StringBuilder(" ");
+        int item=0;
         for(String s:allTask){
             Task t = TMS.getTask(s);
             if(t!=null){
-                if(!t.getSub()) validTask.append(" ").append(s);
+                if(!t.getSub()) {
+                    if(item==0) validTask = new StringBuilder(s);
+                    else {
+                        validTask.append(" ").append(s);
+                    }
+                    item++;
+                }
             }
         }
         return validTask.toString().split(" ");

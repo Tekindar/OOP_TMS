@@ -1,7 +1,10 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class TMS {
 
@@ -18,6 +21,10 @@ public class TMS {
         return false;
     }
     public void CreatePrimitiveTask(String[] keywords, boolean isGUI){
+        String[] prs = keywords[4].split(",");
+        Set<String> hash_set = new HashSet<>(Arrays.asList(prs));
+        keywords[4] = createTaskString(hash_set);
+        System.out.println(keywords[4]);
         if(PrimitiveTask.CPTValidation(keywords, isGUI)){
             PrimitiveTask task = new PrimitiveTask(keywords);
             tasks.add(task);
@@ -27,6 +34,9 @@ public class TMS {
 
     }
     public void CreateCompositeTask(String[] keywords, boolean isGUI){
+        String[] prs = keywords[3].split(",");
+        Set<String> hash_set = new HashSet<>(Arrays.asList(prs));
+        keywords[3] = createTaskString(hash_set);
         if(CompositeTask.CCTValidation(keywords, isGUI)){
             CompositeTask task = new CompositeTask(keywords);
             tasks.add(task);
@@ -50,6 +60,30 @@ public class TMS {
             temp[index++] = t.name;
         }
         return temp;
+    }
+
+    public static String createTaskString(String[] s){
+        boolean flag = true;
+        StringBuilder Temporary= new StringBuilder();
+        for (String string : s) {
+            if (flag) flag = false;
+            else Temporary.append(",");
+            Temporary.append(string);
+        }
+        return Temporary.toString();
+    }
+    public static String createTaskString(Set<String> s){
+        StringBuilder Temporary = new StringBuilder();
+        if(s.isEmpty())Temporary.append(",");
+        else{
+            boolean flag = true;
+            for (String string : s) {
+                if (flag) flag = false;
+                else Temporary.append(",");
+                Temporary.append(string);
+            }
+        }
+        return Temporary.toString();
     }
 
 }

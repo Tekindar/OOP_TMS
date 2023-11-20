@@ -1,9 +1,10 @@
 package hk.edu.polyu.comp.comp2021.tms.view;
-import hk.edu.polyu.comp.comp2021.tms.controller.TestController;
 import hk.edu.polyu.comp.comp2021.tms.model.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.*;
 
 public class GUIViewer {
@@ -300,17 +301,9 @@ public class GUIViewer {
         return validTask.toString().split(" ");
     }
     void getCheckboxes(JCheckBox[] boxes, String[] taskNames){
-        if(taskNames.length==0)TemporarySelection=",";
-        else{
-            boolean flag = true;
-            StringBuilder Temporary= new StringBuilder();
-            for(int i=0;i<taskNames.length;i++) if(boxes[i].isSelected()){
-                if(flag)flag = false;
-                else Temporary.append(",");
-                Temporary.append(taskNames[i]);
-            }
-            TemporarySelection = Temporary.toString();
-        }
+        Set<String> tempString = new HashSet<>();
+        for(int i=0;i< taskNames.length;i++)if(boxes[i].isSelected())tempString.add(taskNames[i]);
+        TemporarySelection = TMS.createTaskString(tempString);
     }
 
     

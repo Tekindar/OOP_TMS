@@ -18,17 +18,6 @@ public class CompositeTask extends Task{
         duration = 0;
         completion = 0;
         setSub(false);
-        for(String s:keywords[3].split(",")){
-            boolean repeated = true;
-            for(Task t:subtask){
-                if(t.name.equals(s)){
-                    repeated=false;
-                    break;
-                }
-            }
-            if(repeated)subtask.add(TMS.getTask(s));
-            else GUIViewer.Log("Repeated Subtask Detected, Automatically Removed Duplication", TestController.getIsGUI());
-        }
         subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
         System.out.println(duration);
@@ -110,8 +99,8 @@ public class CompositeTask extends Task{
         }
 
         String[] prs = keywords[3].split(",");
-        if(prs.length == 0||prs[0].equals(",")) {
-            GUIViewer.Log("A Composite Task Needs To Have At Least One Subtask", isGUI);
+        if(prs.length<2){
+            GUIViewer.Log("A Composite Task Needs To Have At Least Two Subtask", isGUI);
             return false;
         }
         for(String s:prs) {

@@ -17,18 +17,6 @@ public class PrimitiveTask extends Task{
         prerequisite = new LinkedList<>();
         IndirectPrerequisite = new LinkedList<>();
         setSub(false);
-
-        for(String s:keywords[4].split(",")) {
-            boolean repeated = true;
-            for(Task t:prerequisite){
-                if(t.name.equals(s)){
-                    repeated=false;
-                    break;
-                }
-            }
-            if(repeated)prerequisite.add(TMS.getTask(s));
-            else GUIViewer.Log("Repeated Prerequisite Detected, Automatically Removed Duplication", TestController.getIsGUI());
-        }
         completion=0;
         initializeTask();
     }

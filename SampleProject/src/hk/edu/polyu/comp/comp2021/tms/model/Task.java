@@ -1,6 +1,5 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
-import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
 
 public abstract class Task {
     String name;

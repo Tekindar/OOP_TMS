@@ -45,7 +45,4 @@ public class TestController {
             }
         }
     }
-    public static boolean getIsGUI(){
-        return isGUI;
-    }
 }

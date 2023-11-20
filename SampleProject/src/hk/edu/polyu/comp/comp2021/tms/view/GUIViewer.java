@@ -18,6 +18,9 @@ public class GUIViewer {
         return new Font("LEMON", Font.BOLD, 30);
     }
 
+    /**
+     *
+     */
     void mainFrame(){
         // Components
         f = new JFrame();
@@ -61,6 +64,7 @@ public class GUIViewer {
         f.add(CPT);
         f.add(CCT);
     }
+
 
     void CreatePrimitiveTask(){
         // Components

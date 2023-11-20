@@ -17,6 +17,8 @@ public class BasicCriterion extends Criterion  {
         this.property = p;
         this.op=op;
     }
+
+
     public String negatedOp () {
         return switch (op) {
             case (">") -> "<";
@@ -25,6 +27,7 @@ public class BasicCriterion extends Criterion  {
             case ("<=") -> ">=";
             case ("==") -> "!=";
             case ("!=") -> "==";
+            case ("contains") -> "!contains";
             default -> null;
         };
     }
@@ -42,12 +45,12 @@ public class BasicCriterion extends Criterion  {
         // validating criterion name
 
         if(CriteriaStorage.isExisting(name)){
-            System.out.println("Task Existed");
+            System.out.println("Criterion Existed");
             return false;
         }
 
         if((name.charAt(0)>='0' && name.charAt(0)<='9') || name.length()>8){
-            System.out.println("Illegal Task Name");
+            System.out.println("Illegal Criterion Name");
             return false;
         }
 
@@ -55,7 +58,7 @@ public class BasicCriterion extends Criterion  {
             if((name.charAt(i)<'a'|| name.charAt(i)>'z')&&
                     (name.charAt(i)<'A'|| name.charAt(i)>'Z')&&
                     (name.charAt(i)<'0'|| name.charAt(i)>'9')) {
-                System.out.println("Illegal Task Name");
+                System.out.println("Illegal Criterion Name");
                 return false;
             }
         }
@@ -69,8 +72,7 @@ public class BasicCriterion extends Criterion  {
     }
 
     public static boolean isLegalOpANDValue (String property_name, String op, String value) {
-        if ( !( Objects.equals(property_name, "name") || Objects.equals(property_name, "description") ||
-                Objects.equals(property_name, "duration") || Objects.equals(property_name, "prerequisites") || Objects.equals(property_name, "subtasks") ) )
+        if ( !isLegalPropertyName(property_name) )
             return false;
 
         // validating op and value (associated with the property_name)
@@ -103,21 +105,9 @@ public class BasicCriterion extends Criterion  {
             if (!Objects.equals(op, "contains"))
                 return false;
             else if (value.isEmpty()) {
-                System.out.println("Empty prerequisites list must be denoted as a single comma");
+                System.out.println("Empty prerequisites/subtasks list must be denoted as a single comma");
                 return false;
             }
-
-            // Legal empty prerequisites list, denote that there is no prerequisites for this task
-            else if (value.equals(","))
-                return true;
-            else {
-                String [] values = value.split(",");
-                for (String v : values)
-                    if(CriteriaStorage.isExisting(v))
-                        return true;
-                return false;
-            }
-
         }
         return true;
     }
@@ -135,4 +125,6 @@ public class BasicCriterion extends Criterion  {
 
         return isLegalName(name) && isLegalPropertyName(property_name) && isLegalOpANDValue(property_name, op, value);
     }
+
+
 }

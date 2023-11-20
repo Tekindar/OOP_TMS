@@ -3,7 +3,7 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 import java.util.Objects;
 
 public class BinaryCriterion extends Criterion{
-    private String logicOp;
+    private final String logicOp;
     private final Criterion [] dualCriteria;
 
     public String getLogicOp () {

@@ -20,16 +20,16 @@ public class BasicCriterion extends Criterion  {
 
 
     public String negatedOp () {
-        return switch (op) {
-            case (">") -> "<";
-            case ("<") -> ">";
-            case (">=") -> "<=";
-            case ("<=") -> ">=";
-            case ("==") -> "!=";
-            case ("!=") -> "==";
-            case ("contains") -> "!contains";
-            default -> null;
-        };
+         switch (op) {
+            case (">") : return "<";
+            case ("<") : return ">";
+             case (">=") : return "<=";
+             case ("<=") : return ">=";
+             case ("==") : return "!=";
+             case ("!=") : return "==";
+             case ("contains") : return "!contains";
+        }
+         return null;
     }
 
 

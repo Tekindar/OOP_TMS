@@ -12,22 +12,30 @@ public class Criterion {
     public static class Property {
         Property (String property_name, String value){
             switch (property_name) {
-                case "name" -> this.name = value;
-                case "description" -> this.description = value;
-                case "duration" -> this.duration = Double.parseDouble(value);
-                case "prerequisites" -> {
+                case "name" : {
+                    this.name = value;
+                    break;}
+                case "description" : {
+                    this.description = value;
+                    break;}
+                case "duration" :{
+                    this.duration = Double.parseDouble(value);
+                    break;}
+                case "prerequisites" : {
                     prerequisites = new LinkedHashSet<>();
                     if (Objects.equals(value, ","))
                         prerequisites.add("");
                     else
                         prerequisites.addAll(Arrays.asList(value.split(",")));
+                    break;
                 }
-                case "subtasks" -> {
+                case "subtasks" : {
                     subtasks = new LinkedHashSet<>();
                     if (Objects.equals(value, ","))
                         subtasks.add("");
                     else
                         subtasks.addAll(Arrays.asList(value.split(",")));
+                    break;
                 }
             }
         }

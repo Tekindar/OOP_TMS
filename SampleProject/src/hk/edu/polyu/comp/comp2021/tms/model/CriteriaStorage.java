@@ -34,20 +34,29 @@ public class CriteriaStorage implements Create, Search {
 
         System.out.print(criterion.getName() + " " + criterion.getProperty_name() + " " + criterion.getOp() + " ");
         switch (criterion.getProperty_name()) {
-            case "name" -> System.out.print(criterion.getValue().name);
-            case "description" -> System.out.print(criterion.getValue().description);
-            case "duration" -> System.out.print(criterion.getValue().duration);
-            case "prerequisites" -> {
+            case "name" : {
+                System.out.print(criterion.getValue().name);
+                break;}
+            case "description" : {
+                System.out.print(criterion.getValue().description);
+                break;}
+            case "duration" : {
+                System.out.print(criterion.getValue().duration);
+                break;}
+            case "prerequisites" : {
+                System.out.print(criterion.getValue().duration);
                 if (criterion.getValue().prerequisites == null)
                     System.out.print(",");
                 else
                     System.out.print(criterion.getValue().prerequisites);
+                break;
             }
-            case "subtasks" -> {
+            case "subtasks" : {
                 if (criterion.getValue().subtasks == null)
                     System.out.print(",");
                 else
                     System.out.print(criterion.getValue().subtasks);
+                break;
             }
 
         }
@@ -157,43 +166,45 @@ public class CriteriaStorage implements Create, Search {
         else if (c instanceof BasicCriterion) {
             boolean temp = false;
             switch (c.getProperty_name()) {
-                case ("name") -> {
+                case ("name") : {
                     temp = t.name.contains(c.getValue().name);
                     if (Objects.equals(c.op, "contains") )
                         return temp;
                     else
                         return !temp;
+
                 }
-                case ("description") -> {
+                case ("description") : {
                     temp = t.description.contains(c.getValue().description);
                     if (Objects.equals(c.op, "contains") )
                         return temp;
                     else
                         return !temp;
+
                 }
-                case ("duration") -> {
+                case ("duration") : {
                     switch (((BasicCriterion)c).op) {
-                        case (">") -> {
+                        case (">") : {
                             return t.duration > c.getValue().duration;
                         }
-                        case ("<") -> {
+                        case ("<") : {
                             return t.duration < c.getValue().duration;
                         }
-                        case (">=") -> {
+                        case (">=") : {
                             return t.duration >= c.getValue().duration;
                         }
-                        case ("<=") -> {
+                        case ("<=") : {
                             return t.duration <= c.getValue().duration;
                         }
-                        case ("==") -> {
+                        case ("==") : {
                             return t.duration == c.getValue().duration;
                         }
-                        case ("!=") -> {
+                        case ("!=") : {
                             return t.duration != c.getValue().duration;
                         }
                     }
                 }
-                case ("prerequisites") -> {
+                case ("prerequisites") : {
                     // Only PrimitiveTask has prerequisites
                     if (t instanceof CompositeTask) return false;
                     LinkedList <Task> cList = new LinkedList<Task>();
@@ -201,14 +212,14 @@ public class CriteriaStorage implements Create, Search {
                         if (!TMS.taskExist(pre)) return false;
                         cList.add(TMS.getTask(pre));
                     }
-                    // ??? Indirect
+
                     temp = ((PrimitiveTask) t).prerequisite.containsAll(cList) || ((PrimitiveTask) t).IndirectPrerequisite.containsAll(cList);
                     if (Objects.equals(c.op, "contains") )
                         return temp;
                     else
                         return !temp;
                 }
-                case ("subtasks") -> {
+                case ("subtasks") : {
                     // Only CompositeTask has subtasks
                     if (t instanceof PrimitiveTask) return false;
                     LinkedList <Task> cList = new LinkedList<Task>();
@@ -231,16 +242,16 @@ public class CriteriaStorage implements Create, Search {
         boolean left = isMatching(t, ((BinaryCriterion) c).getDualCriteria()[0]);
         boolean right = isMatching(t, ((BinaryCriterion) c).getDualCriteria()[1]);
         switch (((BinaryCriterion) c).getLogicOp()) {
-            case ("&&") -> {
+            case ("&&") : {
                 return left && right;
             }
-            case ("||") -> {
+            case ("||") : {
                 return left || right;
             }
-            case ("!&&") -> {
+            case ("!&&") : {
                 return !(left && right);
             }
-            case ("!||") -> {
+            case ("!||") : {
                 return !(left || right);
             }
 

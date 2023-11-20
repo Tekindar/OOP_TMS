@@ -29,6 +29,9 @@ public class TestController {
                 case "CreateCompositeTask":
                     tms.CreateCompositeTask(keywords,false);
                     break;
+                case "ChangeTask":
+                    tms.ChangeTask(keywords, false);
+                    break;
                 case "GUI":
                     if(keywords.length>1)break;
                     isGUI = true;

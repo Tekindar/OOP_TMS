@@ -51,12 +51,27 @@ public class ChangeTask {
         }
     }
 
-    boolean PrerequisiteCalculation(Task task, Task task1, boolean isGUI){
-        for(Task t : ((PrimitiveTask)task).prerequisite) {
-            ((PrimitiveTask) task).calculatePrerequisite(t, task1);
+
+    void LoopJustify(Task task, Task t1, boolean b){
+        if(task == t1) {
+            b = true;
+            return;
         }
-        return true;
+        if(task.getClass().equals(CompositeTask.class)){
+            for(Task sub: ((CompositeTask) task).subtask) LoopJustify(sub, t1, b);
+        }
+        if(task.getClass().equals(PrimitiveTask.class)){
+            if(((PrimitiveTask) task).prerequisite == null) return;
+            for(Task t: ((PrimitiveTask) task).prerequisite) LoopJustify(t, t1, b);
+        }
     }
+
+    void PrerequisiteCalculation(Task task){
+        for(Task t : ((PrimitiveTask)task).prerequisite) {
+            ((PrimitiveTask) task).calculatePrerequisite(t);
+        }
+    }
+
 
     public boolean Change(String[] keywords, boolean isGUI){
         if(keywords.length != 4){
@@ -81,7 +96,7 @@ public class ChangeTask {
                 GUIViewer.Log("No Such Task Information", isGUI);
                 return false;
             case "name" :
-                //Condition Check
+                {//Condition Check
                 if(TMS.taskExist(key)){
                     GUIViewer.Log("Name Existed", isGUI);
                     return false;
@@ -102,10 +117,10 @@ public class ChangeTask {
                 }
                 //Operation
                 TMS.getTask(keywords[1]).name = key;
-                break;
+                break;}
 
             case "description":
-                //Condition Check
+                {//Condition Check
                 for(int i=0;i<key.length();i++){
                     if((key.charAt(i)<'a'||key.charAt(i)>'z')&&
                             (key.charAt(i)<'A'||key.charAt(i)>'Z')&&
@@ -117,10 +132,10 @@ public class ChangeTask {
                 }
                 //Operation
                 TMS.getTask(keywords[1]).description = key;
-                break;
+                break;}
 
             case "duration":
-                //Condition Check
+                {//Condition Check
                 try{
                     double temp = Double.parseDouble(key);
                     if(temp<=0) {
@@ -141,13 +156,14 @@ public class ChangeTask {
                     GUIViewer.Log("Invalid Change for Task " + keywords[1], isGUI);
                     return false;
                 }
-                break;
+                break;}
 
             case "prerequisites":
+                {
                 if(task.getClass().equals(PrimitiveTask.class)){
                     //Record and Empty the Prerequisite to be Changed
-                    LinkedList<Task> tml = ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite;
-                    tml.addAll(((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite);
+                    LinkedList<Task> tmp = ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite;
+                    LinkedList<Task> tmip = ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite;
                     ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite.clear();
                     ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite.clear();
 
@@ -163,17 +179,31 @@ public class ChangeTask {
                         if(repeated)((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite.add(TMS.getTask(s));
                         else GUIViewer.Log("Repeated Prerequisite Detected, Automatically Removed Duplication", isGUI);
                     }
+                    boolean loop = false;
+                    for(Task t:((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite){
+                        LoopJustify(t, TMS.getTask(keywords[1]), loop);
+                        if(loop){
+                            GUIViewer.Log("Loop Denied", isGUI);
+                            ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite = tmp;
+                            ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite = tmip;
+                            return false;
+                        }
+                    }
 
                     //Operation
-                    if(!PrerequisiteCalculation((PrimitiveTask)TMS.getTask(keywords[1]), (PrimitiveTask)TMS.getTask(keywords[1]), isGUI)) return false;
+                    PrerequisiteCalculation((PrimitiveTask)TMS.getTask(keywords[1]));
                     TimeCalculation((PrimitiveTask)TMS.getTask(keywords[1]));
                     if(RelatedTask != null) for(Task t: RelatedTask){
                         if(t.getClass().equals(PrimitiveTask.class)) {
-                            for(Task t1: tml){
+                            for(Task t1: tmp){
                                 if(((PrimitiveTask) t).prerequisite.contains(t1)) ((PrimitiveTask) t).prerequisite.remove(t1);
                                 if(((PrimitiveTask) t).IndirectPrerequisite.contains(t1)) ((PrimitiveTask) t).IndirectPrerequisite.remove(t1);
                             }
-                            if(!PrerequisiteCalculation(t, t, isGUI)) return false;
+                            for(Task t1: tmip){
+                                if(((PrimitiveTask) t).prerequisite.contains(t1)) ((PrimitiveTask) t).prerequisite.remove(t1);
+                                if(((PrimitiveTask) t).IndirectPrerequisite.contains(t1)) ((PrimitiveTask) t).IndirectPrerequisite.remove(t1);
+                            }
+                            PrerequisiteCalculation(t);
                             TimeCalculation(t);
                         }
                         else TimeCalculation(t);
@@ -183,13 +213,15 @@ public class ChangeTask {
                     GUIViewer.Log("Illegal Prerequisite Change", isGUI);
                     return false;
                 }
-                break;
+                break;}
 
             case "subtasks":
+                {
                 if(task.getClass().equals(CompositeTask.class)){
                     //Empty and record the Subtasks to be Changed
-                    LinkedList<Task> tml = ((CompositeTask) task).AllComSubtask;
-                    tml.addAll(((CompositeTask) task).AllSubtask);
+                    LinkedList<Task> tmacs = ((CompositeTask) task).AllComSubtask;
+                    LinkedList<Task> tmas = ((CompositeTask) task).AllSubtask;
+                    LinkedList<Task> tms = ((CompositeTask) task).subtask;
                     for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).subtask){
                         t.setSub(false);
                     }
@@ -224,6 +256,24 @@ public class ChangeTask {
                         }
                         if(repeated)((CompositeTask) TMS.getTask(keywords[1])).subtask.add(TMS.getTask(s));
                     }
+                    boolean loop = false;
+                    for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).subtask){
+                        if(t.getClass().equals(CompositeTask.class)){
+                            for(Task t1: ((CompositeTask) t).AllSubtask) {
+                                for(Task t2: ((PrimitiveTask)t1).prerequisite)LoopJustify(t2, t1, loop);
+                            }
+                        }
+                        else{
+                            for(Task t1: ((PrimitiveTask)t).prerequisite)LoopJustify(t1, t, loop);
+                        }
+                        if(loop){
+                            GUIViewer.Log("Loop Denied", isGUI);
+                            ((CompositeTask) TMS.getTask(keywords[1])).AllComSubtask = tmacs;
+                            ((CompositeTask) TMS.getTask(keywords[1])).AllSubtask = tmas;
+                            ((CompositeTask) TMS.getTask(keywords[1])).subtask =tms;
+                            return false;
+                        }
+                    }
 
                     //Operation
                     ((CompositeTask) TMS.getTask(keywords[1])).subtaskCalculate(((CompositeTask) TMS.getTask(keywords[1])).subtask);
@@ -233,7 +283,7 @@ public class ChangeTask {
                         TimeCalculation(RelatedTask.get(i));
                     }
                     if(RelatedTask != null) for(int i = 0; i < CutPoint; i++){
-                        if(!PrerequisiteCalculation(RelatedTask.get(i), RelatedTask.get(i), isGUI)) return false;
+                        PrerequisiteCalculation(RelatedTask.get(i));
                         TimeCalculation(RelatedTask.get(i));
                     }
                 }
@@ -241,7 +291,7 @@ public class ChangeTask {
                     GUIViewer.Log("Illegal Subtasks Change", isGUI);
                     return false;
                 }
-                break;
+                break;}
         }
         return true;
     }

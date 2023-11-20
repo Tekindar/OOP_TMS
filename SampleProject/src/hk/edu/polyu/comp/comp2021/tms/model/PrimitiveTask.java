@@ -22,21 +22,20 @@ public class PrimitiveTask extends Task{
     }
 
     void initializeTask(){
-        for(Task t:prerequisite)calculatePrerequisite(t, null);
+        for(Task t:prerequisite)calculatePrerequisite(t);
         for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
         this.completion+=this.duration;
         System.out.println(completion);
     }
 
-    void calculatePrerequisite(Task t, Task t1){
-        if(t.equals(t1)) throw new IllegalArgumentException();
+    void calculatePrerequisite(Task t){
         if(t.getClass().equals(CompositeTask.class)){
             for(Task sub: ((CompositeTask) t).subtask) {
                 // delete if task appears in domain of subtasks
                 this.prerequisite.removeIf(pr -> pr.equals(sub));
                 if(!this.IndirectPrerequisite.contains(sub)) this.IndirectPrerequisite.add(sub);
                 // recursively check subtasks
-                calculatePrerequisite(sub, t1);
+                calculatePrerequisite(sub);
             }
         }
         else{
@@ -46,7 +45,7 @@ public class PrimitiveTask extends Task{
                 this.prerequisite.removeIf(pr -> pr.equals(task));
                 if(!this.IndirectPrerequisite.contains(task)) this.IndirectPrerequisite.add(task);
                 //recursively check direct prerequisites
-                calculatePrerequisite(task, t1);
+                calculatePrerequisite(task);
             }
         }
 

@@ -10,13 +10,11 @@ public class CompositeTask extends Task{
 
     LinkedList<Task> subtask;
     LinkedList<Task> AllSubtask;
-    LinkedList<Task> AllComSubtask;
     CompositeTask(String[] keywords){
         name = keywords[1];
         description = keywords[2];
         subtask = new LinkedList<>();
         AllSubtask = new LinkedList<>();
-        AllComSubtask = new LinkedList<>();
         duration = 0;
         completion = 0;
         setSub(false);
@@ -50,7 +48,6 @@ public class CompositeTask extends Task{
     void subtaskCalculate(LinkedList<Task> sub){
         for(Task t:sub){
             if(t.getClass().equals(CompositeTask.class)){
-                AllComSubtask.add(t);
                 subtaskCalculate(((CompositeTask) t).subtask);
             }
             else{

@@ -45,11 +45,6 @@ public class TMS {
         }
     }
 
-    public void ChangeTask(String[] keywords, boolean isGUI){
-        ChangeTask task = new ChangeTask(keywords);
-        if(task.Change(keywords, isGUI)) GUIViewer.Log("Change Completed", isGUI);
-    }
-
     public static Task getTask(String tName){
         for(Task t:tasks){
             if(t.name.equals(tName)){

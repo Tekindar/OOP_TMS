@@ -238,7 +238,7 @@ public class ChangeTask {
 
                     //Condition Check
                     String[] prs = key.split(",");
-                    if(prs.length < 3 || prs[0].equals(",") || prs[1].equals(",")){
+                    if(prs.length < 2 || prs[0].equals(",") || prs[1].equals(",")){
                         System.out.println("Subtasks Number Wrong");
                         return false;
                     }

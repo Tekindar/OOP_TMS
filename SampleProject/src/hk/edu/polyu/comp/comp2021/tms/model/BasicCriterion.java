@@ -8,14 +8,14 @@ public class BasicCriterion extends Criterion  {
     BasicCriterion (String name, String property_name, String op, String value){
         this.name = name;
         this.property_name = property_name;
+        this.op=op;
         this.property = new Property(property_name, value);
-        this.op=op;
     }
-
-    BasicCriterion (String name, Property p, String op){
+    BasicCriterion (String name, String property_name, String op, Property property){
         this.name = name;
-        this.property = p;
+        this.property_name = property_name;
         this.op=op;
+        this.property = property;
     }
 
 

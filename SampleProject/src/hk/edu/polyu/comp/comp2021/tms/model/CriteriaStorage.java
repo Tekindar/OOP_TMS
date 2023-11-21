@@ -49,7 +49,6 @@ public class CriteriaStorage implements Create, Search {
                 System.out.print(criterion.getValue().duration);
                 break;}
             case "prerequisites" : {
-                System.out.print(criterion.getValue().duration);
                 if (criterion.getValue().prerequisites == null)
                     System.out.print(",");
                 else
@@ -126,14 +125,12 @@ public class CriteriaStorage implements Create, Search {
         }
 
 
-
-
         String oldName = command[1];
         String negName = command[0];
         Criterion oldC = searchName(oldName);
         if (oldC instanceof BasicCriterion) {
             BasicCriterion newC =
-                    new BasicCriterion(negName, ((BasicCriterion)oldC).getValue(),  ((BasicCriterion)oldC).negatedOp());
+                    new BasicCriterion(negName, ((BasicCriterion)oldC).getProperty_name(),  ((BasicCriterion)oldC).negatedOp(), ((BasicCriterion)oldC).getValue());
             CriteriaStorage.criteria.add(newC);
         }
         else  {

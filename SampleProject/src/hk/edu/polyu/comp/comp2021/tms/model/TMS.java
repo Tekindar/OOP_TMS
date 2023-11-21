@@ -80,6 +80,14 @@ public class TMS {
         }
     }
 
+    public void ChangeTask(String[] keywords){
+        ChangeTask task = new ChangeTask(keywords);
+        if(task.Change(keywords)){
+            System.out.println("Change Task Completed");
+        }
+    }
+
+
     /**
      * the method returns the specific task
      * by receiving a name.

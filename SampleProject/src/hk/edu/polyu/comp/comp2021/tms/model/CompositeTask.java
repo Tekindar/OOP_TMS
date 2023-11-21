@@ -10,6 +10,7 @@ public class CompositeTask extends Task{
 
     LinkedList<Task> subtask;
     LinkedList<Task> AllSubtask;
+    LinkedList<Task> AllComSubtask;
 
     /**
      * Constructer of a composite Task,
@@ -77,6 +78,7 @@ public class CompositeTask extends Task{
     void subtaskCalculate(LinkedList<Task> sub){
         for(Task t:sub){
             if(t.getClass().equals(CompositeTask.class)){
+                AllComSubtask.add(t);
                 subtaskCalculate(((CompositeTask) t).subtask);
             }
             else{

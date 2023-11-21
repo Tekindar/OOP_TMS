@@ -31,6 +31,9 @@ public class TMSController {
                 case "CreateCompositeTask":
                     tms.CreateCompositeTask(keywords);
                     break;
+                case "ChangeTask":
+                    tms.ChangeTask(keywords);
+                    break;
                 case "DefineBasicCriterion" :
                     cs.createBasicCriterion(content);
                     break;

@@ -26,14 +26,17 @@ public class PrimitiveTask extends Task{
         IndirectPrerequisite = new LinkedList<>();
         setSub(false);
         completion=0;
-        initializeTask();
+        initializeTask(keywords[4]);
     }
 
     /**
      * method to calculate the complete time as well as prerequisites of a primitive task,
-     * this will be executed after user inputs is stored in the object.
+     * this will be executed after user inputs is stored in the object.\
+     *
+     * @param tasks input string containing task names
      */
-    void initializeTask(){
+    void initializeTask(String tasks){
+        for(String s:tasks.split(","))prerequisite.add(TMS.getTask(s));
         for(Task t:prerequisite)calculatePrerequisite(t);
         for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
         this.completion+=this.duration;

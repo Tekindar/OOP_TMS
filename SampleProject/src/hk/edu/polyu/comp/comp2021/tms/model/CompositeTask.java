@@ -25,6 +25,7 @@ public class CompositeTask extends Task{
         duration = 0;
         completion = 0;
         setSub(false);
+        for(String s:keywords[3].split(","))subtask.add(TMS.getTask(s));
         subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
         System.out.println(duration);

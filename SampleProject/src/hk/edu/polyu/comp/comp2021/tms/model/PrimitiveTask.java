@@ -1,5 +1,6 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 /**
@@ -39,7 +40,11 @@ public class PrimitiveTask extends Task{
         for(String s:tasks.split(","))prerequisite.add(TMS.getTask(s));
         for(Task t:prerequisite)calculatePrerequisite(t);
         for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
-        this.completion+=this.duration;
+
+        BigDecimal a = new BigDecimal(this.completion);
+        BigDecimal b = new BigDecimal(this.duration);
+        this.completion=a.add(b).doubleValue();
+
         System.out.println(completion);
     }
 

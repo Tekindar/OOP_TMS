@@ -5,6 +5,11 @@ import hk.edu.polyu.comp.comp2021.tms.controller.Search;
 
 import java.util.*;
 
+/**
+ *
+ *
+ * @author BAI Haoran
+ */
 public class CriteriaStorage implements Create, Search {
 
 

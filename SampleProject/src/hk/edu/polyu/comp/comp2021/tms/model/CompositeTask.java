@@ -1,5 +1,6 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 /**
@@ -62,7 +63,9 @@ public class CompositeTask extends Task{
             }
         }
         else {
-            parentTime += t.duration;
+            BigDecimal a = new BigDecimal(parentTime);
+            BigDecimal b = new BigDecimal(t.duration);
+            parentTime=a.add(b).doubleValue();
             if(AllSubtask.contains(t))tempHigh = parentTime;
             for(Task pr:((PrimitiveTask)t).prerequisite) DurationCalculation(pr, parentTime, tempHigh);
             if(((PrimitiveTask)t).prerequisite.isEmpty()) this.duration = Math.max(this.duration,tempHigh);

@@ -22,7 +22,7 @@ public class PrimitiveTask extends Task{
     PrimitiveTask(String[] keywords){
         name = keywords[1];
         description = keywords[2];
-        duration = Double.parseDouble(keywords[3]);
+        duration = new BigDecimal(keywords[3]).doubleValue();
         prerequisite = new LinkedList<>();
         IndirectPrerequisite = new LinkedList<>();
         setSub(false);
@@ -40,11 +40,9 @@ public class PrimitiveTask extends Task{
         for(String s:tasks.split(","))prerequisite.add(TMS.getTask(s));
         for(Task t:prerequisite)calculatePrerequisite(t);
         for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
-
-        BigDecimal a = new BigDecimal(this.completion);
-        BigDecimal b = new BigDecimal(this.duration);
+        BigDecimal a = new BigDecimal(Double.toString(this.completion));
+        BigDecimal b = new BigDecimal(Double.toString(this.duration));
         this.completion=a.add(b).doubleValue();
-
         System.out.println(completion);
     }
 

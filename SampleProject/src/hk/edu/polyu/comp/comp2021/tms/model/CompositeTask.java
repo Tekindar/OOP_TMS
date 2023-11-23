@@ -29,7 +29,6 @@ public class CompositeTask extends Task{
         for(String s:keywords[3].split(","))subtask.add(TMS.getTask(s));
         subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
-        System.out.println(duration);
     }
 
     /**
@@ -63,8 +62,8 @@ public class CompositeTask extends Task{
             }
         }
         else {
-            BigDecimal a = new BigDecimal(parentTime);
-            BigDecimal b = new BigDecimal(t.duration);
+            BigDecimal a = new BigDecimal(Double.toString(parentTime));
+            BigDecimal b = new BigDecimal(Double.toString(t.duration));
             parentTime=a.add(b).doubleValue();
             if(AllSubtask.contains(t))tempHigh = parentTime;
             for(Task pr:((PrimitiveTask)t).prerequisite) DurationCalculation(pr, parentTime, tempHigh);

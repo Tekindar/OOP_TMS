@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 /**
  * A primitive task is inherited from the abstract class Task
- * @Author FU Tao, NING Weichen
+ * @author FU Tao, NING Weichen
  */
 public class CompositeTask extends Task{
 

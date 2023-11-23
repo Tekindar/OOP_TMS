@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * ChangeTask is a class for operating properties of existed task
- * @Author NING Weichen
+ * @author NING Weichen
  */
 public class ChangeTask {
     LinkedList<Task> RelatedTask;

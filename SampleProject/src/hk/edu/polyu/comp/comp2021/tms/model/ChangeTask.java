@@ -4,24 +4,37 @@ import java.util.*;
 
 /**
  * ChangeTask is a class for operating properties of existed task
+ * @Author NING Weichen
  */
 public class ChangeTask {
     LinkedList<Task> RelatedTask;
     //For Recording the Primitive and Composite Separate Point
     int CutPoint;
 
+    /**
+     * Constructor of Change Task to initialize related task list and the cut point between composite tasks and primitive tasks
+     *
+     * @param keywords the details of changing tasks
+     */
     ChangeTask(String[] keywords){
         RelatedTask = new LinkedList<>();
         CutPoint = FindRelatedTask(TMS.getTask(keywords[1]), TMS.getAllTasks());
     }
 
+    /**
+     * method providing related tasks as a list
+     *
+     * @param task the task to be changed
+     * @param l the list of all tasks
+     * @return return the cut point between composite tasks and primitive tasks
+     */
     int FindRelatedTask(Task task, LinkedList<Task> l){
         int i = 0;
         for(Task t: l){
             if(t == task) continue;
             if(t.getClass().equals(CompositeTask.class)) {
-                if (((CompositeTask) t).AllComSubtask.contains(task)) RelatedTask.add(t);
-                if (((CompositeTask) t).AllSubtask.contains(task)) RelatedTask.add(t);
+                if (((CompositeTask) t).getAllCompositeSubtask().contains(task)) RelatedTask.add(t);
+                if (((CompositeTask) t).getAllSubtask().contains(task)) RelatedTask.add(t);
             }
             if(t.getClass().equals(PrimitiveTask.class)) {
                 if (((PrimitiveTask) t).getDirectPrerequisite().contains(task)) {
@@ -37,6 +50,11 @@ public class ChangeTask {
         return i;
     }
 
+    /**
+     * The method is to calculate task duration and completion
+     *
+     * @param task the task needed to be recalculated
+     */
     void TimeCalculation(Task task){
         task.completion = 0;
         if(task.getClass().equals(PrimitiveTask.class)) {
@@ -55,6 +73,14 @@ public class ChangeTask {
     }
 
 
+    /**
+     * the method is to justify whether a loop exists
+     *
+     * @param task the task in progress
+     * @param t1 the primitive task for comparing whether loop exists
+     * @param b boolean field to record loop
+     * @return return true for loop existence and false for none
+     */
     boolean LoopJustify(Task task, Task t1, boolean b){
         if(task == t1) {
             b = true;
@@ -76,6 +102,11 @@ public class ChangeTask {
         return b;
     }
 
+    /**
+     * The method for prerequisite calculation
+     *
+     * @param task the task to be calculated
+     */
     void PrerequisiteCalculation(Task task){
         for(Task t : ((PrimitiveTask)task).getDirectPrerequisite()) {
             ((PrimitiveTask) task).calculatePrerequisite(t);
@@ -83,6 +114,12 @@ public class ChangeTask {
     }
 
 
+    /**
+     * the main method containing all functions of adjusting whether user operation can be approved and manage change operation
+     *
+     * @param keywords the input information of the task to be changed
+     * @return returning a boolean value to justify whether change operation is allowed
+     */
     public boolean Change(String[] keywords){
         if(keywords.length != 4){
             System.out.println("Invalid Input Length");
@@ -229,15 +266,15 @@ public class ChangeTask {
             {
                 if(task.getClass().equals(CompositeTask.class)){
                     //Empty and record the Subtasks to be Changed
-                    LinkedList<Task> tmacs = ((CompositeTask) task).AllComSubtask;
-                    LinkedList<Task> tmas = ((CompositeTask) task).AllSubtask;
-                    LinkedList<Task> tms = ((CompositeTask) task).subtask;
-                    for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).subtask){
+                    LinkedList<Task> tmacs = ((CompositeTask) task).getAllCompositeSubtask();
+                    LinkedList<Task> tmas = ((CompositeTask) task).getAllSubtask();
+                    LinkedList<Task> tms = ((CompositeTask) task).getDirectSubtask();
+                    for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask()){
                         t.setSub(false);
                     }
-                    ((CompositeTask) TMS.getTask(keywords[1])).AllComSubtask.clear();
-                    ((CompositeTask) TMS.getTask(keywords[1])).AllSubtask.clear();
-                    ((CompositeTask) TMS.getTask(keywords[1])).subtask.clear();
+                    ((CompositeTask) TMS.getTask(keywords[1])).getAllCompositeSubtask().clear();
+                    ((CompositeTask) TMS.getTask(keywords[1])).getAllSubtask().clear();
+                    ((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask().clear();
 
                     //Condition Check
                     String[] prs = key.split(",");
@@ -258,18 +295,18 @@ public class ChangeTask {
                             return false;
                         }
                         boolean repeated = true;
-                        for(Task t1:((CompositeTask) task).subtask){
+                        for(Task t1:((CompositeTask) task).getDirectSubtask()){
                             if(t1.name.equals(s)){
                                 repeated=false;
                                 break;
                             }
                         }
-                        if(repeated)((CompositeTask) TMS.getTask(keywords[1])).subtask.add(TMS.getTask(s));
+                        if(repeated)((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask().add(TMS.getTask(s));
                     }
                     boolean loop = false;
-                    for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).subtask){
+                    for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask()){
                         if(t.getClass().equals(CompositeTask.class)){
-                            for(Task t1: ((CompositeTask) t).AllSubtask) {
+                            for(Task t1: ((CompositeTask) t).getAllSubtask()) {
                                 for(Task t2: ((PrimitiveTask)t1).getDirectPrerequisite()) {
                                     loop = LoopJustify(t2, t1, loop);
                                     if(loop == true) break;
@@ -285,18 +322,18 @@ public class ChangeTask {
                         }
                         if(loop){
                             System.out.println("Loop Denied");
-                            ((CompositeTask) TMS.getTask(keywords[1])).AllComSubtask = tmacs;
-                            ((CompositeTask) TMS.getTask(keywords[1])).AllSubtask = tmas;
-                            ((CompositeTask) TMS.getTask(keywords[1])).subtask =tms;
+                            ((CompositeTask) TMS.getTask(keywords[1])).getAllCompositeSubtask().addAll(tmacs);
+                            ((CompositeTask) TMS.getTask(keywords[1])).getAllSubtask().addAll(tmas);
+                            ((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask().addAll(tms);
                             return false;
                         }
                     }
 
                     //Operation
-                    ((CompositeTask) TMS.getTask(keywords[1])).subtaskCalculate(((CompositeTask) TMS.getTask(keywords[1])).subtask);
+                    ((CompositeTask) TMS.getTask(keywords[1])).subtaskCalculate(((CompositeTask) TMS.getTask(keywords[1])).getDirectSubtask());
                     TimeCalculation((CompositeTask) TMS.getTask(keywords[1]));
                     if(RelatedTask != null) for(int i = CutPoint; i < RelatedTask.size(); i++){
-                        ((CompositeTask)RelatedTask.get(i)).subtaskCalculate(((CompositeTask) RelatedTask.get(i)).subtask);
+                        ((CompositeTask)RelatedTask.get(i)).subtaskCalculate(((CompositeTask) RelatedTask.get(i)).getDirectSubtask());
                         TimeCalculation(RelatedTask.get(i));
                     }
                     if(RelatedTask != null) for(int i = 0; i < CutPoint; i++){

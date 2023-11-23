@@ -15,7 +15,7 @@ public class CompositeTask extends Task{
     private final LinkedList<Task> AllComSubtask;
 
     /**
-     * Constructer of a composite Task,
+     * Constructor of a composite Task,
      * initialize an instance.
      *
      * @param keywords the input details of a composite task
@@ -50,7 +50,7 @@ public class CompositeTask extends Task{
      * recursive method runs from the direct subtask,
      * increase the duration for each primitive task and then
      * go to its prerequisite task.
-     * If the target task is compositive, then go to each of its subtasks,
+     * If the target task is composite, then go to each of its subtasks,
      * If the method runs to a primitive task that is within the composite,
      * we update duration with temporary maximum.
      *

@@ -7,10 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="960838d0-ad82-499e-8091-e8a35e297a00" name="Changes" comment="ChangeTask">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SampleProject/src/hk/edu/polyu/comp/comp2021/tms/model/ChangeTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/SampleProject/src/hk/edu/polyu/comp/comp2021/tms/model/ChangeTask.java" afterDir="false" />
-    </list>
+    <list default="true" id="960838d0-ad82-499e-8091-e8a35e297a00" name="Changes" comment="ChangeTask" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -166,7 +163,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700743225904</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="ChangeTask">
+      <option name="closed" value="true" />
+      <created>1700744561282</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1700744561282</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

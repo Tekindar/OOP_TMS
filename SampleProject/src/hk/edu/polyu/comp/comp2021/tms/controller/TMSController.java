@@ -31,8 +31,17 @@ public class TMSController {
                 case "CreateCompositeTask":
                     tms.CreateCompositeTask(keywords);
                     break;
-                case "ChangeTask":
-                    tms.ChangeTask(keywords);
+                case "DeleteTask" :
+                    break;
+                case "ChangeTask" :
+                    break;
+                case "PrintTask" :
+                    break;
+                case "PrintAllTasks" :
+                    break;
+                case "ReportDuration" :
+                    break;
+                case "ReportEarliestFinishTime":
                     break;
                 case "DefineBasicCriterion" :
                     cs.createBasicCriterion(content);
@@ -49,8 +58,20 @@ public class TMSController {
                 case "Search":
                     cs.search(content);
                     break;
-
-
+                case "Store":
+                    if(keywords.length!=2||!keywords[1].equals("Path"))
+                        System.out.println("Invalid Operation Name");
+                    else
+                        break;
+                case "Load" :
+                    if(keywords.length!=2||!keywords[1].equals("Path"))
+                        System.out.println("Invalid Operation Name");
+                    else
+                        break;
+                case "Quit":
+                    if(keywords.length==1) System.exit(0);
+                    System.out.println("Invalid Operation Name");
+                    break;
                 default:
                     System.out.println("Invalid Operation Name");
                     break;

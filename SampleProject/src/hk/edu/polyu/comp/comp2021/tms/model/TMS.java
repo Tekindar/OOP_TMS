@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class TMS {
 
-    public static LinkedList<Task> tasks;
+    private static LinkedList<Task> tasks;
     private int TaskNumber;
 
     /**
@@ -139,4 +139,11 @@ public class TMS {
         return Temporary.toString();
     }
 
+    /**
+     * return all existing tasks
+     * @return linked-list of tasks existing
+     */
+    public static LinkedList<Task> getAllTasks(){
+        return tasks;
+    }
 }

@@ -9,9 +9,8 @@ import java.util.LinkedList;
  */
 public class CompositeTask extends Task{
 
-    LinkedList<Task> subtask;
-    LinkedList<Task> AllSubtask;
-    LinkedList<Task> AllComSubtask;
+    private final LinkedList<Task> subtask;
+    private final LinkedList<Task> AllSubtask;
 
     /**
      * Constructer of a composite Task,
@@ -24,14 +23,12 @@ public class CompositeTask extends Task{
         description = keywords[2];
         subtask = new LinkedList<>();
         AllSubtask = new LinkedList<>();
-        AllComSubtask = new LinkedList<>();
         duration = 0;
         completion = 0;
         setSub(false);
         for(String s:keywords[3].split(","))subtask.add(TMS.getTask(s));
         subtaskCalculate(subtask); // Initiate all direct and indirect subtasks for duration calculation
         initializeTask();
-        System.out.println(duration);
     }
 
     /**
@@ -50,7 +47,7 @@ public class CompositeTask extends Task{
      * recursive method runs from the direct subtask,
      * increase the duration for each primitive task and then
      * go to its prerequisite task.
-     * If the target task is composite, then go to each of its subtasks,
+     * If the target task is compositive, then go to each of its subtasks,
      * If the method runs to a primitive task that is within the composite,
      * we update duration with temporary maximum.
      *
@@ -60,17 +57,17 @@ public class CompositeTask extends Task{
      */
     void DurationCalculation(Task t, double parentTime, double tempHigh){
         if(t.getClass().equals(CompositeTask.class)){
-            for(Task sub: ((CompositeTask) t).subtask) {
+            for(Task sub: ((CompositeTask) t).getDirectSubtask()) {
                 DurationCalculation(sub, parentTime, tempHigh);// goto it's sub
             }
         }
         else {
-            BigDecimal a = new BigDecimal(parentTime);
-            BigDecimal b = new BigDecimal(t.duration);
+            BigDecimal a = new BigDecimal(Double.toString(parentTime));
+            BigDecimal b = new BigDecimal(Double.toString(t.duration));
             parentTime=a.add(b).doubleValue();
             if(AllSubtask.contains(t))tempHigh = parentTime;
-            for(Task pr:((PrimitiveTask)t).prerequisite) DurationCalculation(pr, parentTime, tempHigh);
-            if(((PrimitiveTask)t).prerequisite.isEmpty()) this.duration = Math.max(this.duration,tempHigh);
+            for(Task pr:((PrimitiveTask)t).getDirectPrerequisite()) DurationCalculation(pr, parentTime, tempHigh);
+            if(((PrimitiveTask)t).getDirectPrerequisite().isEmpty()) this.duration = Math.max(this.duration,tempHigh);
         }
     }
 
@@ -82,8 +79,7 @@ public class CompositeTask extends Task{
     void subtaskCalculate(LinkedList<Task> sub){
         for(Task t:sub){
             if(t.getClass().equals(CompositeTask.class)){
-                AllComSubtask.add(t);
-                subtaskCalculate(((CompositeTask) t).subtask);
+                subtaskCalculate(((CompositeTask) t).getDirectSubtask());
             }
             else{
                 AllSubtask.add(t);
@@ -160,5 +156,13 @@ public class CompositeTask extends Task{
         return true;
     }
 
+    /**
+     * the method will return direct subtasks.
+     *
+     * @return all direct subtasks of the task
+     */
+    public LinkedList<Task> getDirectSubtask(){
+        return subtask;
+    }
 
 }

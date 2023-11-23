@@ -7,9 +7,14 @@ import java.util.*;
  * @author NING Weichen
  */
 public class ChangeTask {
-    LinkedList<Task> RelatedTask;
-    //For Recording the Primitive and Composite Separate Point
-    int CutPoint;
+    /**
+     * Related task list, used to store those task which changes in the current task may affect their properties
+     */
+    private final LinkedList<Task> RelatedTask;
+    /**
+     * For Recording the Primitive and Composite Separate Point
+     */
+    private final int CutPoint;
 
     /**
      * Constructor of Change Task to initialize related task list and the cut point between composite tasks and primitive tasks

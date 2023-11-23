@@ -2,6 +2,9 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 
 import java.util.*;
 
+/**
+ * ChangeTask is a class for operating properties of existed task
+ */
 public class ChangeTask {
     LinkedList<Task> RelatedTask;
     //For Recording the Primitive and Composite Separate Point
@@ -9,7 +12,7 @@ public class ChangeTask {
 
     ChangeTask(String[] keywords){
         RelatedTask = new LinkedList<>();
-        CutPoint = FindRelatedTask(TMS.getTask(keywords[1]), TMS.tasks);
+        CutPoint = FindRelatedTask(TMS.getTask(keywords[1]), TMS.getAllTasks());
     }
 
     int FindRelatedTask(Task task, LinkedList<Task> l){
@@ -21,11 +24,11 @@ public class ChangeTask {
                 if (((CompositeTask) t).AllSubtask.contains(task)) RelatedTask.add(t);
             }
             if(t.getClass().equals(PrimitiveTask.class)) {
-                if (((PrimitiveTask) t).prerequisite.contains(task)) {
+                if (((PrimitiveTask) t).getDirectPrerequisite().contains(task)) {
                     RelatedTask.addFirst(t);
                     i++;
                 }
-                if (((PrimitiveTask) t).IndirectPrerequisite.contains(task)) {
+                if (((PrimitiveTask) t).getIndirectPrerequisite().contains(task)) {
                     RelatedTask.addFirst(t);
                     i++;
                 }
@@ -37,15 +40,15 @@ public class ChangeTask {
     void TimeCalculation(Task task){
         task.completion = 0;
         if(task.getClass().equals(PrimitiveTask.class)) {
-            for (Task t : ((PrimitiveTask)task).prerequisite) task.completion = Math.max(task.completion, t.completion);
+            for (Task t : ((PrimitiveTask)task).getDirectPrerequisite()) task.completion = Math.max(task.completion, t.completion);
             task.completion += task.duration;
         }
         if(task.getClass().equals(CompositeTask.class)){
-            for(Task t: ((CompositeTask)task).subtask){
+            for(Task t: ((CompositeTask)task).getDirectSubtask()){
                 task.completion = Math.max(task.completion, t.completion);
                 t.setSub(true);
             }
-            for(Task t: ((CompositeTask)task).subtask){
+            for(Task t: ((CompositeTask)task).getDirectSubtask()){
                 ((CompositeTask)task).DurationCalculation(t, 0, 0);
             }
         }
@@ -58,14 +61,14 @@ public class ChangeTask {
             return b;
         }
         if(task.getClass().equals(CompositeTask.class)){
-            for(Task sub: ((CompositeTask) task).subtask) {
+            for(Task sub: ((CompositeTask) task).getDirectSubtask()) {
                 b = LoopJustify(sub, t1, b);
                 if(b == true) return b;
             }
         }
         if(task.getClass().equals(PrimitiveTask.class)){
-            if(((PrimitiveTask) task).prerequisite == null) return b;
-            for(Task t: ((PrimitiveTask) task).prerequisite) {
+            if(((PrimitiveTask) task).getDirectPrerequisite() == null) return b;
+            for(Task t: ((PrimitiveTask) task).getDirectPrerequisite()) {
                 b = LoopJustify(t, t1, b);
                 if(b == true) return b;
             }
@@ -74,7 +77,7 @@ public class ChangeTask {
     }
 
     void PrerequisiteCalculation(Task task){
-        for(Task t : ((PrimitiveTask)task).prerequisite) {
+        for(Task t : ((PrimitiveTask)task).getDirectPrerequisite()) {
             ((PrimitiveTask) task).calculatePrerequisite(t);
         }
     }
@@ -169,30 +172,30 @@ public class ChangeTask {
             {
                 if(task.getClass().equals(PrimitiveTask.class)){
                     //Record and Empty the Prerequisite to be Changed
-                    LinkedList<Task> tmp = ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite;
-                    LinkedList<Task> tmip = ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite;
-                    ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite.clear();
-                    ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite.clear();
+                    LinkedList<Task> tmp = ((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite();
+                    LinkedList<Task> tmip = ((PrimitiveTask)TMS.getTask(keywords[1])).getIndirectPrerequisite();
+                    ((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite().clear();
+                    ((PrimitiveTask)TMS.getTask(keywords[1])).getIndirectPrerequisite().clear();
 
                     //Condition Check
                     for(String s:key.split(",")) {
                         boolean repeated = true;
-                        for(Task t: ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite){
+                        for(Task t: ((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite()){
                             if(t.name.equals(s)){
                                 repeated=false;
                                 break;
                             }
                         }
-                        if(repeated)((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite.add(TMS.getTask(s));
+                        if(repeated)((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite().add(TMS.getTask(s));
                         else System.out.println("Repeated Prerequisite Detected, Automatically Removed Duplication");
                     }
                     boolean loop = false;
-                    for(Task t:((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite){
+                    for(Task t:((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite()){
                         loop = LoopJustify(t, TMS.getTask(keywords[1]), loop);
                         if(loop){
                             System.out.println("Loop Denied");
-                            ((PrimitiveTask)TMS.getTask(keywords[1])).prerequisite = tmp;
-                            ((PrimitiveTask)TMS.getTask(keywords[1])).IndirectPrerequisite = tmip;
+                            ((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite().addAll(tmp);
+                            ((PrimitiveTask)TMS.getTask(keywords[1])).getIndirectPrerequisite().addAll(tmip);
                             return false;
                         }
                     }
@@ -203,12 +206,12 @@ public class ChangeTask {
                     if(RelatedTask != null) for(Task t: RelatedTask){
                         if(t.getClass().equals(PrimitiveTask.class)) {
                             for(Task t1: tmp){
-                                if(((PrimitiveTask) t).prerequisite.contains(t1)) ((PrimitiveTask) t).prerequisite.remove(t1);
-                                if(((PrimitiveTask) t).IndirectPrerequisite.contains(t1)) ((PrimitiveTask) t).IndirectPrerequisite.remove(t1);
+                                if(((PrimitiveTask) t).getDirectPrerequisite().contains(t1)) ((PrimitiveTask) t).getDirectPrerequisite().remove(t1);
+                                if(((PrimitiveTask) t).getIndirectPrerequisite().contains(t1)) ((PrimitiveTask) t).getIndirectPrerequisite().remove(t1);
                             }
                             for(Task t1: tmip){
-                                if(((PrimitiveTask) t).prerequisite.contains(t1)) ((PrimitiveTask) t).prerequisite.remove(t1);
-                                if(((PrimitiveTask) t).IndirectPrerequisite.contains(t1)) ((PrimitiveTask) t).IndirectPrerequisite.remove(t1);
+                                if(((PrimitiveTask) t).getDirectPrerequisite().contains(t1)) ((PrimitiveTask) t).getDirectPrerequisite().remove(t1);
+                                if(((PrimitiveTask) t).getIndirectPrerequisite().contains(t1)) ((PrimitiveTask) t).getIndirectPrerequisite().remove(t1);
                             }
                             PrerequisiteCalculation(t);
                             TimeCalculation(t);
@@ -267,7 +270,7 @@ public class ChangeTask {
                     for(Task t: ((CompositeTask) TMS.getTask(keywords[1])).subtask){
                         if(t.getClass().equals(CompositeTask.class)){
                             for(Task t1: ((CompositeTask) t).AllSubtask) {
-                                for(Task t2: ((PrimitiveTask)t1).prerequisite) {
+                                for(Task t2: ((PrimitiveTask)t1).getDirectPrerequisite()) {
                                     loop = LoopJustify(t2, t1, loop);
                                     if(loop == true) break;
                                 }
@@ -275,7 +278,7 @@ public class ChangeTask {
                             }
                         }
                         else{
-                            for(Task t1: ((PrimitiveTask)t).prerequisite) {
+                            for(Task t1: ((PrimitiveTask)t).getDirectPrerequisite()) {
                                 loop = LoopJustify(t1, t, loop);
                                 if(loop == true) break;
                             }

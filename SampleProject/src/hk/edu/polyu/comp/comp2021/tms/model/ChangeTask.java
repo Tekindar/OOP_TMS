@@ -314,5 +314,7 @@ public class ChangeTask {
     public static void main(String[] args){
         String a = "CreatePrimitiveTask task1 boil-water 0.3 ,";
         String b = "CreatePrimitiveTask task2 make-coffee 0.3 task1";
+        String c = "CreateCompositeTask comp1 make-coffee task1,task2";
+        String d = "CreatePrimitiveTask task3 boil-watering 0.3 comp1";
     }
 }

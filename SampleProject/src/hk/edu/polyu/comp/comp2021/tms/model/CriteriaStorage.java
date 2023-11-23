@@ -167,7 +167,6 @@ public class CriteriaStorage implements Create, Search {
         if (c instanceof IsPrimitiveCriterion)
             return t instanceof PrimitiveTask;
 
-
         else if (c instanceof BasicCriterion) {
             boolean temp = false;
             switch (c.getProperty_name()) {
@@ -218,7 +217,7 @@ public class CriteriaStorage implements Create, Search {
                         cList.add(TMS.getTask(pre));
                     }
 
-                    temp = ((PrimitiveTask) t).prerequisite.containsAll(cList) || ((PrimitiveTask) t).IndirectPrerequisite.containsAll(cList);
+                    temp = ((PrimitiveTask) t).getDirectPrerequisite().containsAll(cList) || ((PrimitiveTask) t).getIndirectPrerequisite().containsAll(cList);
                     if (Objects.equals(c.op, "contains") )
                         return temp;
                     else
@@ -232,7 +231,7 @@ public class CriteriaStorage implements Create, Search {
                         if (!TMS.taskExist(sub)) return false;
                         cList.add(TMS.getTask(sub));
                     }
-                    temp = ((CompositeTask) t).subtask.containsAll(cList);
+                    temp = ((CompositeTask) t).getDirectSubtask().containsAll(cList);
                     if (Objects.equals(c.op, "contains") )
                         return temp;
                     else
@@ -276,7 +275,7 @@ public class CriteriaStorage implements Create, Search {
 
         Criterion criterion = CriteriaStorage.searchName(command[0]);
         LinkedList<String> matchedList = new LinkedList<String>();
-        for (Task t : TMS.tasks) {
+        for (Task t : TMS.getAllTasks()) {
             if (isMatching(t, criterion))
                 matchedList.add(t.name);
         }

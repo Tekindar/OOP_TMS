@@ -10,8 +10,8 @@ import java.util.LinkedList;
 
 public class PrimitiveTask extends Task{
 
-    LinkedList<Task> prerequisite;
-    LinkedList<Task> IndirectPrerequisite;
+    private final LinkedList<Task> prerequisite;
+    private final LinkedList<Task> IndirectPrerequisite;
 
     /**
      * Constructer of a primitive Task,
@@ -54,7 +54,7 @@ public class PrimitiveTask extends Task{
      */
     void calculatePrerequisite(Task t){
         if(t.getClass().equals(CompositeTask.class)){
-            for(Task sub: ((CompositeTask) t).subtask) {
+            for(Task sub: ((CompositeTask) t).getDirectSubtask()) {
                 // delete if task appears in domain of subtasks
                 this.prerequisite.removeIf(pr -> pr.equals(sub));
                 if(!this.IndirectPrerequisite.contains(sub)) this.IndirectPrerequisite.add(sub);
@@ -63,8 +63,8 @@ public class PrimitiveTask extends Task{
             }
         }
         else{
-            if(((PrimitiveTask)t).prerequisite.isEmpty())return;
-            for(Task task:((PrimitiveTask)t).prerequisite){
+            if(((PrimitiveTask)t).getDirectPrerequisite().isEmpty())return;
+            for(Task task:((PrimitiveTask)t).getDirectPrerequisite()){
                 // delete if task appears in prerequisite of subtasks
                 this.prerequisite.removeIf(pr -> pr.equals(task));
                 if(!this.IndirectPrerequisite.contains(task)) this.IndirectPrerequisite.add(task);
@@ -145,5 +145,22 @@ public class PrimitiveTask extends Task{
         return true;
     }
 
+    /**
+     * the method will return direct prerequisites.
+     *
+     * @return all direct prerequisites of the task
+     */
+    public LinkedList<Task> getDirectPrerequisite(){
+        return prerequisite;
+    }
+
+    /**
+     * the method will return indirect prerequisites.
+     *
+     * @return all indirect prerequisites of the task
+     */
+    public LinkedList<Task> getIndirectPrerequisite(){
+        return IndirectPrerequisite;
+    }
 
 }

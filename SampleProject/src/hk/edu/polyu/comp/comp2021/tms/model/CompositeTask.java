@@ -9,8 +9,8 @@ import java.util.LinkedList;
  */
 public class CompositeTask extends Task{
 
-    LinkedList<Task> subtask;
-    LinkedList<Task> AllSubtask;
+    private final LinkedList<Task> subtask;
+    private final LinkedList<Task> AllSubtask;
 
     /**
      * Constructer of a composite Task,
@@ -57,7 +57,7 @@ public class CompositeTask extends Task{
      */
     void DurationCalculation(Task t, double parentTime, double tempHigh){
         if(t.getClass().equals(CompositeTask.class)){
-            for(Task sub: ((CompositeTask) t).subtask) {
+            for(Task sub: ((CompositeTask) t).getDirectSubtask()) {
                 DurationCalculation(sub, parentTime, tempHigh);// goto it's sub
             }
         }
@@ -66,8 +66,8 @@ public class CompositeTask extends Task{
             BigDecimal b = new BigDecimal(Double.toString(t.duration));
             parentTime=a.add(b).doubleValue();
             if(AllSubtask.contains(t))tempHigh = parentTime;
-            for(Task pr:((PrimitiveTask)t).prerequisite) DurationCalculation(pr, parentTime, tempHigh);
-            if(((PrimitiveTask)t).prerequisite.isEmpty()) this.duration = Math.max(this.duration,tempHigh);
+            for(Task pr:((PrimitiveTask)t).getDirectPrerequisite()) DurationCalculation(pr, parentTime, tempHigh);
+            if(((PrimitiveTask)t).getDirectPrerequisite().isEmpty()) this.duration = Math.max(this.duration,tempHigh);
         }
     }
 
@@ -79,7 +79,7 @@ public class CompositeTask extends Task{
     void subtaskCalculate(LinkedList<Task> sub){
         for(Task t:sub){
             if(t.getClass().equals(CompositeTask.class)){
-                subtaskCalculate(((CompositeTask) t).subtask);
+                subtaskCalculate(((CompositeTask) t).getDirectSubtask());
             }
             else{
                 AllSubtask.add(t);
@@ -156,5 +156,13 @@ public class CompositeTask extends Task{
         return true;
     }
 
+    /**
+     * the method will return direct subtasks.
+     *
+     * @return all direct subtasks of the task
+     */
+    public LinkedList<Task> getDirectSubtask(){
+        return subtask;
+    }
 
 }

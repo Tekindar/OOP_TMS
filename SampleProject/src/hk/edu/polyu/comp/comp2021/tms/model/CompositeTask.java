@@ -12,6 +12,8 @@ public class CompositeTask extends Task{
     private final LinkedList<Task> subtask;
     private final LinkedList<Task> AllSubtask;
 
+    private final LinkedList<Task> AllComSubtask;
+
     /**
      * Constructer of a composite Task,
      * initialize an instance.
@@ -23,6 +25,7 @@ public class CompositeTask extends Task{
         description = keywords[2];
         subtask = new LinkedList<>();
         AllSubtask = new LinkedList<>();
+        AllComSubtask = new LinkedList<>();
         duration = 0;
         completion = 0;
         setSub(false);
@@ -79,6 +82,7 @@ public class CompositeTask extends Task{
     void subtaskCalculate(LinkedList<Task> sub){
         for(Task t:sub){
             if(t.getClass().equals(CompositeTask.class)){
+                this.AllComSubtask.add(t);
                 subtaskCalculate(((CompositeTask) t).getDirectSubtask());
             }
             else{
@@ -163,6 +167,22 @@ public class CompositeTask extends Task{
      */
     public LinkedList<Task> getDirectSubtask(){
         return subtask;
+    }
+    /**
+     * the method will return all direct and indirect subtasks.
+     *
+     * @return all direct and indirect subtasks of the task
+     */
+    public LinkedList<Task> getAllSubtask(){
+        return AllSubtask;
+    }
+    /**
+     * the method will return all direct and indirect subtasks that are composite.
+     *
+     * @return all direct and indirect composite subtasks of the task
+     */
+    public LinkedList<Task> getAllCompositeSubtask(){
+        return AllComSubtask;
     }
 
 }

@@ -6,9 +6,17 @@ import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
+/**
+ * The controller class, works as an intermedia between user and model,
+ * it receives input strings and translates into command that
+ * calls for operation in the model.
+ */
 public class TMSController {
 
+    /**
+     * The system programme begins to run here.
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         TMS tms = new TMS();
         CriteriaStorage cs = new CriteriaStorage();

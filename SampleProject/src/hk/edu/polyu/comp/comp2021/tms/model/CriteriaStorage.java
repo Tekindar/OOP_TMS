@@ -18,83 +18,38 @@ public class CriteriaStorage implements Create, Search {
         criteria.add(IsPrimitiveCriterion.getSingleton());
     }
 
+    public static LinkedList<Criterion> getCriteria() {
+        return criteria;
+    }
+
     // map from name to stored criterion object
     public static Criterion searchName (String name) {
         for (Criterion criterion : criteria) {
-            if (criterion.name.equals(name)) {
+            if (criterion.getName().equals(name)) {
                 return criterion;
             }
         }
         return null;
     }
+
+
     public static boolean isExisting (String name) {
         for (Criterion criterion : criteria) {
-            if (criterion.name.equals(name)) {
+            if (criterion.getName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
-    public void printBasicCriteria (Criterion criterion) {
 
-        System.out.print(criterion.getName() + " " + criterion.getProperty_name() + " " + criterion.getOp() + " ");
-        switch (criterion.getProperty_name()) {
-            case "name" : {
-                System.out.print(criterion.getValue().name);
-                break;}
-            case "description" : {
-                System.out.print(criterion.getValue().description);
-                break;}
-            case "duration" : {
-                System.out.print(criterion.getValue().duration);
-                break;}
-            case "prerequisites" : {
-                if (criterion.getValue().prerequisites == null)
-                    System.out.print(",");
-                else
-                    System.out.print(criterion.getValue().prerequisites);
-                break;
-            }
-            case "subtasks" : {
-                if (criterion.getValue().subtasks == null)
-                    System.out.print(",");
-                else
-                    System.out.print(criterion.getValue().subtasks);
-                break;
-            }
-
-        }
-
-    }
-    public void printBinaryCriteria (Criterion criterion) {
-
-        if (criterion instanceof BasicCriterion) {
-
-            printBasicCriteria(criterion);
-            return;
-        }
-        System.out.print("(");
-        printBinaryCriteria(((BinaryCriterion)criterion).getDualCriteria()[0]);
-        System.out.print(" " + ((BinaryCriterion)criterion).getLogicOp() + " ");
-        printBinaryCriteria(((BinaryCriterion)criterion).getDualCriteria()[1]);
-        System.out.print(")");
+    public static void ClearCriteria() {
+        criteria.clear();
     }
 
     public void printAllCriteria (){
         for (Criterion c : criteria) {
-            if (c instanceof IsPrimitiveCriterion) {
-                System.out.println("IsPrimitive");
-                continue;
-            }
-            else if (c instanceof BasicCriterion)
-            {
-                System.out.println();
-                printBasicCriteria(c);
-            }
-            else {
-                System.out.println();
-                printBinaryCriteria(c);
-            }
+            c.printCriteria();
+            System.out.println();
         }
     }
 
@@ -155,64 +110,7 @@ public class CriteriaStorage implements Create, Search {
     }
 
 
-    /**
-     * @param t the task object to be checked
-     * @param c the criterion object for retrieval
-     * @return the boolean value of matching-check result
-    */
-    public static boolean isMatching (Task t, Criterion c) {
-        if (c instanceof IsPrimitiveCriterion)
-            return t instanceof PrimitiveTask;
 
-        else if (c instanceof BasicCriterion) {
-            boolean temp = false;
-            switch (c.getProperty_name()) {
-                case ("name") : {
-                    temp = t.name.contains(c.getValue().name);
-                    if (Objects.equals(c.op, "contains") )
-                        return temp;
-                    else
-                        return !temp;
-
-                }
-                case ("description") : {
-                    temp = t.description.contains(c.getValue().description);
-                    if (Objects.equals(c.op, "contains") )
-                        return temp;
-                    else
-                        return !temp;
-
-                }
-                case ("duration") : {
-                    switch (((BasicCriterion)c).op) {
-                        case (">") : {
-                            return t.duration > c.getValue().duration;
-                        }
-                        case ("<") : {
-                            return t.duration < c.getValue().duration;
-                        }
-                        case (">=") : {
-                            return t.duration >= c.getValue().duration;
-                        }
-                        case ("<=") : {
-                            return t.duration <= c.getValue().duration;
-                        }
-                        case ("==") : {
-                            return t.duration == c.getValue().duration;
-                        }
-                        case ("!=") : {
-                            return t.duration != c.getValue().duration;
-                        }
-                    }
-                }
-                case ("prerequisites") : {
-                    // Only PrimitiveTask has prerequisites
-                    if (t instanceof CompositeTask) return false;
-                    LinkedList <Task> cList = new LinkedList<Task>();
-                    for (String pre : c.getValue().prerequisites) {
-                        if (!TMS.taskExist(pre)) return false;
-                        cList.add(TMS.getTask(pre));
-                    }
 
                     temp = ((PrimitiveTask) t).getDirectPrerequisite().containsAll(cList) || ((PrimitiveTask) t).getIndirectPrerequisite().containsAll(cList);
                     if (Objects.equals(c.op, "contains") )
@@ -272,6 +170,9 @@ public class CriteriaStorage implements Create, Search {
 
         Criterion criterion = CriteriaStorage.searchName(command[0]);
         LinkedList<String> matchedList = new LinkedList<String>();
+        for (Task t : TMS.tasks) {
+            assert criterion != null;
+            if (criterion.isMatching(t))
         for (Task t : TMS.getAllTasks()) {
             if (isMatching(t, criterion))
                 matchedList.add(t.name);

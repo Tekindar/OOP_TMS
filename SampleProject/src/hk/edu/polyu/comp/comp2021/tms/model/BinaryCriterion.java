@@ -14,7 +14,7 @@ public class BinaryCriterion extends Criterion{
         return this.dualCriteria;
     }
     BinaryCriterion (String name, Criterion [] dualCriteria, String logicOp){
-        this.name = name;
+        this.setName(name);
         this.dualCriteria = dualCriteria;
         this.logicOp=logicOp;
     }
@@ -52,6 +52,55 @@ public class BinaryCriterion extends Criterion{
         return (command.length==4 && isLegalName(command[0]) && isLegalLogicOp(command[2])
                 && isLegalOperands( new String[] {command[1], command[3]} ) );
 
+    }
+
+    public void printBinaryCriteria (Criterion c) {
+
+        if (c instanceof BasicCriterion) {
+
+            ((BasicCriterion) c).printCriteria();
+            return;
+        }
+        System.out.print("(");
+        printBinaryCriteria(((BinaryCriterion)c).getDualCriteria()[0]);
+        System.out.print(" " + ((BinaryCriterion)c).getLogicOp() + " ");
+        printBinaryCriteria(((BinaryCriterion)c).getDualCriteria()[1]);
+        System.out.print(")");
+    }
+
+    @Override
+    public void printCriteria () {
+        printBinaryCriteria (this);
+    }
+
+
+    public boolean isMatching(Task t, Criterion c) {
+        if (c instanceof BasicCriterion) return c.isMatching(t);
+
+        boolean left = isMatching(t, ((BinaryCriterion) c).getDualCriteria()[0]);
+        boolean right = isMatching(t, ((BinaryCriterion) c).getDualCriteria()[1]);
+        switch (((BinaryCriterion) c).getLogicOp()) {
+            case ("&&") : {
+                return left && right;
+            }
+            case ("||") : {
+                return left || right;
+            }
+            case ("!&&") : {
+                return !(left && right);
+            }
+            case ("!||") : {
+                return !(left || right);
+            }
+
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean isMatching(Task t) {
+        return this.isMatching(t, this);
     }
 
 }

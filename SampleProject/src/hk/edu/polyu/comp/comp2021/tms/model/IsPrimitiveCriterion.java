@@ -1,10 +1,10 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
-public class IsPrimitiveCriterion extends Criterion{
+public final class IsPrimitiveCriterion extends Criterion{
     private static IsPrimitiveCriterion singleton;
 
     private IsPrimitiveCriterion (){
-         name = "isPrimitive";
+         setName("isPrimitive");
     }
 
     public static IsPrimitiveCriterion getSingleton(){
@@ -14,4 +14,13 @@ public class IsPrimitiveCriterion extends Criterion{
         return singleton;
     }
 
+    @Override
+    public void printCriteria() {
+        System.out.print("IsPrimitive");
+    }
+
+    @Override
+    public boolean isMatching(Task t) {
+        return t instanceof PrimitiveTask;
+    }
 }

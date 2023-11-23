@@ -7,7 +7,9 @@ import java.util.*;
 
 public class CriteriaStorage implements Create, Search {
 
-
+    public static void ClearCriteria() {
+        criteria.clear();
+    }
     private static final LinkedList<Criterion> criteria = new LinkedList <Criterion> ();
     static {
         criteria.add(IsPrimitiveCriterion.getSingleton());
@@ -22,10 +24,6 @@ public class CriteriaStorage implements Create, Search {
         }
         return null;
     }
-    public static void ClearCriteria() {
-        criteria.clear();
-    }
-
     public static LinkedList<Criterion> getcriteria(){
         return criteria;
     }
@@ -65,7 +63,6 @@ public class CriteriaStorage implements Create, Search {
                     System.out.print(criterion.getValue().subtasks);
                 break;
             }
-
         }
 
     }

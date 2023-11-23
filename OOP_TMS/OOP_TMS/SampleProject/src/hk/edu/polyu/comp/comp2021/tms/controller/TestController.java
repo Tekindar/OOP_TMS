@@ -50,17 +50,8 @@ public class TestController {
                 case "PrintAllCriteria":
                     cs.printAllCriteria();
                     break;
-                case "Print":
-                    Print_Task.printone(keywords);
-                    break;
-                case "PrintAllTasks":
-                    Print_Task.printAll();
-                    break;
                 case "Search":
                     cs.search(content);
-                    break;
-                case "Store":
-                    File_storage.store(keywords);
                     break;
                 case "GUI":
                     if(keywords.length>1)break;
@@ -72,14 +63,21 @@ public class TestController {
                     isGUI = false;
                     GUI.display(false);
                     break;
+                case "Print":
+                    tms.printTask(keywords,true);
+                    break;
+                case "PrintAllTasks":
+                    tms.printTask(keywords,false);
+                    break;
+                case "Store":
+                    tms.storeTask(keywords);
+                    break;
                 case "Load":
                     tms.FileLoad(keywords);
                     break;
                 case "DeleteTask":
                     tms.DeleteTask(keywords);
                     break;
-
-
                 default:
                     System.out.println("Invalid Operation Name");
                     break;

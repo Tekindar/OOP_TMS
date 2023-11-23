@@ -1,5 +1,4 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
-
 import hk.edu.polyu.comp.comp2021.tms.view.GUIViewer;
 
 import java.io.IOException;
@@ -12,8 +11,7 @@ public class TMS {
 
     public static LinkedList<Task> tasks;
     private int TaskNumber;
-
-    public TMS() {
+    public TMS(){
         tasks = new LinkedList<>();
     }
 
@@ -31,8 +29,8 @@ public class TMS {
      * @param keywords is the user input
      * This method will delete the task determined by user.
      * First, it will check wheather the input is valid. Then it will distinguish
-     *                 the primitive task and the composite task and delete them according
-     *                 to correspoding method.
+     * the primitive task and the composite task and delete them according
+     * to correspoding method.
      */
     public void DeleteTask(String[] keywords) {
         if (keywords.length != 2) {
@@ -63,19 +61,25 @@ public class TMS {
             Print_Task.printone(keywords);
         }
     }
-
-    public static boolean taskExist(String s) {
-        if (tasks == null) return false;
-        for (Task t : tasks) if (s.equals(t.name)) return true;
-        return false;
+    public void storeTask(String[] keywords) throws IOException{
+        if (keywords.length != 2) {
+            System.out.println("Wrong input length.");
+            return;
+        }
+        File_storage.store(keywords);
     }
 
-    public void CreatePrimitiveTask(String[] keywords, boolean isGUI) {
+    public static boolean taskExist(String s){
+        if(tasks==null)return false;
+        for(Task t: tasks) if(s.equals(t.name))return true;
+        return false;
+    }
+    public void CreatePrimitiveTask(String[] keywords, boolean isGUI){
         String[] prs = keywords[4].split(",");
         Set<String> hash_set = new HashSet<>(Arrays.asList(prs));
         keywords[4] = createTaskString(hash_set);
         System.out.println(keywords[4]);
-        if (PrimitiveTask.CPTValidation(keywords, isGUI)) {
+        if(PrimitiveTask.CPTValidation(keywords, isGUI)){
             PrimitiveTask task = new PrimitiveTask(keywords);
             tasks.add(task);
             TaskNumber++;
@@ -83,12 +87,11 @@ public class TMS {
         }
 
     }
-
-    public void CreateCompositeTask(String[] keywords, boolean isGUI) {
+    public void CreateCompositeTask(String[] keywords, boolean isGUI){
         String[] prs = keywords[3].split(",");
         Set<String> hash_set = new HashSet<>(Arrays.asList(prs));
         keywords[3] = createTaskString(hash_set);
-        if (CompositeTask.CCTValidation(keywords)) {
+        if(CompositeTask.CCTValidation(keywords, isGUI)){
             CompositeTask task = new CompositeTask(keywords);
             tasks.add(task);
             TaskNumber++;
@@ -96,27 +99,26 @@ public class TMS {
         }
     }
 
-    public static Task getTask(String tName) {
-        for (Task t : tasks) {
-            if (t.name.equals(tName)) {
+    public static Task getTask(String tName){
+        for(Task t:tasks){
+            if(t.name.equals(tName)){
                 return t;
             }
         }
         return null;
     }
-
-    public String[] getTaskNames() {
+    public String[] getTaskNames(){
         String[] temp = new String[TaskNumber];
         int index = 0;
-        for (Task t : tasks) {
+        for(Task t:tasks){
             temp[index++] = t.name;
         }
         return temp;
     }
 
-    public static String createTaskString(String[] s) {
+    public static String createTaskString(String[] s){
         boolean flag = true;
-        StringBuilder Temporary = new StringBuilder();
+        StringBuilder Temporary= new StringBuilder();
         for (String string : s) {
             if (flag) flag = false;
             else Temporary.append(",");
@@ -124,11 +126,10 @@ public class TMS {
         }
         return Temporary.toString();
     }
-
-    public static String createTaskString(Set<String> s) {
+    public static String createTaskString(Set<String> s){
         StringBuilder Temporary = new StringBuilder();
-        if (s.isEmpty()) Temporary.append(",");
-        else {
+        if(s.isEmpty())Temporary.append(",");
+        else{
             boolean flag = true;
             for (String string : s) {
                 if (flag) flag = false;

@@ -66,21 +66,25 @@ public class Criterion {
                     return String.valueOf(duration);
                 }
                 case "prerequisites" : {
-                    String res = "";
-                    for (String c:prerequisites){
-                        res=res+","+c;
-                    }
-                   return res.substring(1);
+                    prerequisites = new LinkedHashSet<>();
+                    if (Objects.equals(value, ","))
+                        prerequisites.add("");
+                    else{
+                        prerequisites.addAll(Arrays.asList(value.split(",")));}
+                    this.result = value;
+                    break;
                 }
                 case "subtasks" : {
-                    String res = "";
-                    for (String c:subtasks){
-                        res=res+","+c;
-                    }
-                    return res.substring(1);
+                    subtasks = new LinkedHashSet<>();
+                    if (Objects.equals(value, ","))
+                        subtasks.add("");
+                    else{
+                        subtasks.addAll(Arrays.asList(value.split(",")));}
+                    this.result = value;
+                    break;
                 }
             }
-            return null;
+            return result;
         }
         /**
          * @return the value of the property accoring to its specification

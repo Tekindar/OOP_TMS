@@ -1,7 +1,12 @@
 package hk.edu.polyu.comp.comp2021.tms.controller;
 
-import java.util.LinkedList;
-
+/**
+ * The functional interface Search will be implemented in CriteriaStorage Class so that
+ * the search function could be realized with given criteria and all existing tasks
+ */
 public interface Search {
-    LinkedList<String> search (String []command);
+    /**
+     * @param command is command of user input except of keyword ("Search")
+     */
+    void search (String []command);
 }

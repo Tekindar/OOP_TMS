@@ -1,8 +1,10 @@
 package hk.edu.polyu.comp.comp2021.tms.controller;
 
+import hk.edu.polyu.comp.comp2021.tms.view.*;
 import hk.edu.polyu.comp.comp2021.tms.model.CriteriaStorage;
 import hk.edu.polyu.comp.comp2021.tms.model.TMS;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -40,16 +42,22 @@ public class TMSController {
                     tms.CreateCompositeTask(keywords);
                     break;
                 case "DeleteTask" :
+                    tms.DeleteTask(keywords);
                     break;
                 case "ChangeTask" :
+                    tms.ChangeTask(keywords);
                     break;
                 case "PrintTask" :
+                    tms.printTask(keywords, true);
                     break;
                 case "PrintAllTasks" :
+                    tms.printTask(keywords, false);
                     break;
                 case "ReportDuration" :
+                    tms.reportDuration(keywords);
                     break;
                 case "ReportEarliestFinishTime":
+                    tms.reportEarliestFinishTime(keywords);
                     break;
                 case "DefineBasicCriterion" :
                     cs.createBasicCriterion(content);
@@ -61,21 +69,29 @@ public class TMSController {
                     cs.createBinaryCriterion(content);
                     break;
                 case "PrintAllCriteria":
-                    cs.printAllCriteria();
+                    Print_Criteria.printAllCriteria();
                     break;
                 case "Search":
                     cs.search(content);
                     break;
                 case "Store":
-                    if(keywords.length!=2||!keywords[1].equals("Path"))
+                    if(keywords.length!=2)
                         System.out.println("Invalid Operation Name");
-                    else
-                        break;
+                    else {
+                        try {
+                            tms.storeTask(keywords);
+                        } catch (IOException ignored) {
+                        }
+                    }
+                    break;
                 case "Load" :
-                    if(keywords.length!=2||!keywords[1].equals("Path"))
+                    if(keywords.length!=2)
                         System.out.println("Invalid Operation Name");
-                    else
-                        break;
+                    else {
+                        try {tms.FileLoad(keywords);}
+                        catch (IOException ignored) {}
+                    }
+                    break;
                 case "Quit":
                     if(keywords.length==1) System.exit(0);
                     System.out.println("Invalid Operation Name");

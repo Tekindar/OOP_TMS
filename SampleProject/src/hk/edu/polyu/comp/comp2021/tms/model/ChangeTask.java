@@ -1,5 +1,6 @@
 package hk.edu.polyu.comp.comp2021.tms.model;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -7,9 +8,14 @@ import java.util.*;
  * @author NING Weichen
  */
 public class ChangeTask {
-    LinkedList<Task> RelatedTask;
-    //For Recording the Primitive and Composite Separate Point
-    int CutPoint;
+    /**
+     * Related task list, used to store those task which changes in the current task may affect their properties
+     */
+    private final LinkedList<Task> RelatedTask;
+    /**
+     * For Recording the Primitive and Composite Separate Point
+     */
+    private final int CutPoint;
 
     /**
      * Constructor of Change Task to initialize related task list and the cut point between composite tasks and primitive tasks
@@ -56,14 +62,16 @@ public class ChangeTask {
      * @param task the task needed to be recalculated
      */
     void TimeCalculation(Task task){
-        task.completion = 0;
+        task.setCompletion(0);
         if(task.getClass().equals(PrimitiveTask.class)) {
-            for (Task t : ((PrimitiveTask)task).getDirectPrerequisite()) task.completion = Math.max(task.completion, t.completion);
-            task.completion += task.duration;
+            for (Task t : ((PrimitiveTask)task).getDirectPrerequisite()) task.setCompletion(Math.max(task.getCompletion(), t.getCompletion()));
+            BigDecimal a = new BigDecimal(Double.toString(task.getCompletion()));
+            BigDecimal b = new BigDecimal(Double.toString(task.getDuration()));
+            task.setCompletion(a.add(b).doubleValue());
         }
         if(task.getClass().equals(CompositeTask.class)){
             for(Task t: ((CompositeTask)task).getDirectSubtask()){
-                task.completion = Math.max(task.completion, t.completion);
+                task.setCompletion(Math.max(task.getCompletion(), t.getCompletion()));
                 t.setSub(true);
             }
             for(Task t: ((CompositeTask)task).getDirectSubtask()){
@@ -163,7 +171,8 @@ public class ChangeTask {
                     }
                 }
                 //Operation
-                TMS.getTask(keywords[1]).name = key;
+                Task t = TMS.getTask(keywords[1]);
+                if(t!=null)t.setName(key);
                 break;}
 
             case "description":
@@ -178,7 +187,8 @@ public class ChangeTask {
                     }
                 }
                 //Operation
-                TMS.getTask(keywords[1]).description = key;
+                Task t = TMS.getTask(keywords[1]);
+                if(t!=null)t.setDescription(key);
                 break;}
 
             case "duration":
@@ -195,7 +205,7 @@ public class ChangeTask {
                 }
                 //Operation
                 if(TMS.getTask(keywords[1]).getClass().equals(PrimitiveTask.class)){
-                    TMS.getTask(keywords[1]).duration = Double.parseDouble(key);
+                    TMS.getTask(keywords[1]).setDuration(Double.parseDouble(key));
                     TimeCalculation(TMS.getTask(keywords[1]));
                     if(RelatedTask != null) for(Task t: RelatedTask) TimeCalculation(t);
                 }
@@ -218,7 +228,7 @@ public class ChangeTask {
                     for(String s:key.split(",")) {
                         boolean repeated = true;
                         for(Task t: ((PrimitiveTask)TMS.getTask(keywords[1])).getDirectPrerequisite()){
-                            if(t.name.equals(s)){
+                            if(t.getName().equals(s)){
                                 repeated=false;
                                 break;
                             }
@@ -296,7 +306,7 @@ public class ChangeTask {
                         }
                         boolean repeated = true;
                         for(Task t1:((CompositeTask) task).getDirectSubtask()){
-                            if(t1.name.equals(s)){
+                            if(t1.getName().equals(s)){
                                 repeated=false;
                                 break;
                             }
@@ -349,12 +359,12 @@ public class ChangeTask {
         }
         return true;
     }
-
+    /*
     //Test only
     public static void main(String[] args){
         String a = "CreatePrimitiveTask task1 boil-water 0.3 ,";
         String b = "CreatePrimitiveTask task2 make-coffee 0.3 task1";
         String c = "CreateCompositeTask comp1 make-coffee task1,task2";
         String d = "CreatePrimitiveTask task3 boil-watering 0.3 comp1";
-    }
+    }*/
 }

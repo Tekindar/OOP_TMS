@@ -5,31 +5,57 @@ package hk.edu.polyu.comp.comp2021.tms.model;
 import java.util.LinkedList;
 import java.util.Objects;
 
+
+/**
+ * BasicCriterion is consisting of name, property, operator and value
+ * BasicCriterion is the subclass of Criterion, override the printCriteria and isMatching methods
+ * to implement print/checking legal creation features
+ */
 public class BasicCriterion extends Criterion  {
 
-    /*
-    @p
+    /** @param name name of BasicCriterion, follow the rule:
+     *               1) may contain only English letters and digits,
+     *               2) cannot start with digits, and
+     *               3) may contain at most eight characters
+     *  @param property_name name of property of BasicCriterion, either name, description, duration, prerequisites, or subtasks
+     *  @param op operator of BasicCriterion
+     *  @param value value of BasicCriterion
+     *               If property_name is name or description, op must be "contains" and value must be a string in double quotes;
+     *               If property_name is duration, op can be >, <, >=, <=, ==, or !=, and value must be a real value.
+     *               If property_name is prerequisites or subtasks, op must be "contains", and value must be a list of comma-separated task names.
      */
     BasicCriterion (String name, String property_name, String op, String value){
         this.setName(name);
-        this.property_name = property_name;
-        this.op=op;
+        this.setProperty_name(property_name);
+        this.setOp(op);
         this.setProperty(new Property(property_name, value));
     }
+    /** Overload the constructor to facilitate the creation of negated BasicCriterion,
+     * @param name name of BasicCriterion, follow the rule:
+     *               1) may contain only English letters and digits,
+     *               2) cannot start with digits, and
+     *               3) may contain at most eight characters
+     *  @param property_name name of property of BasicCriterion, either name, description, duration, prerequisites, or subtasks
+     *  @param op (negated) operator of BasicCriterion
+     *  @param property This property is used to create negatedCriterion based on BasicCriterion (Here it setProperty is the deep copy of property)
+     */
     BasicCriterion (String name, String property_name, String op, Property property){
         this.setName(name);
-        this.property_name = property_name;
-        this.op=op;
+        this.setProperty_name(property_name);
+        this.setOp(op);
         this.setProperty(property);
     }
 
 
+    /**
+     * @return the negated operator of original BasicCriterion
+     */
     public String negatedOp () {
-         switch (op) {
-            case (">") : return "<";
-            case ("<") : return ">";
-             case (">=") : return "<=";
-             case ("<=") : return ">=";
+         switch (getOp()) {
+            case (">") : return "<=";
+            case ("<") : return ">=";
+             case (">=") : return "<";
+             case ("<=") : return ">";
              case ("==") : return "!=";
              case ("!=") : return "==";
              case ("contains") : return "!contains";
@@ -38,14 +64,10 @@ public class BasicCriterion extends Criterion  {
     }
 
 
-    // FOR TESTING ONLY
-    public static void main (String []args) {
-        BasicCriterion c0 = new BasicCriterion("a", "name", "=", "abc");
-        System.out.println(c0.getProperty().getName());
-
-
-    }
-
+    /**
+     * @param name is the input name of this BasicCriterion
+     * @return the boolean value to check whether this is a legal name
+     */
     public static boolean isLegalName (String name) {
         // validating criterion name
 
@@ -70,12 +92,23 @@ public class BasicCriterion extends Criterion  {
         return true;
     }
 
+    /**
+     * @param property_name is name of property of BasicCriterion, either name, description, duration, prerequisites, or subtasks
+     * @return the boolean value to check whether this is a legal property_name
+     */
     public static boolean isLegalPropertyName (String property_name){
         // validating property_name
         return (Objects.equals(property_name, "name") || Objects.equals(property_name, "description") ||
                 Objects.equals(property_name, "duration") || Objects.equals(property_name, "prerequisites") || Objects.equals(property_name, "subtasks"));
     }
 
+
+    /**
+     * @param property_name the input property_name, since the checking of op are value related to property_name
+     * @param op the operator
+     * @param value the value given property_name
+     * @return the boolean value to check whether this is a legal (operator, value) pair
+     */
     public static boolean isLegalOpANDValue (String property_name, String op, String value) {
         if ( !isLegalPropertyName(property_name) )
             return false;
@@ -84,7 +117,7 @@ public class BasicCriterion extends Criterion  {
 
         if (property_name.equals("name") || property_name.equals("description")) {
 
-            if (value.charAt(0) != '\"' || value.charAt(value.length()-1) != '\"')
+            if (value.length()<=2 || value.charAt(0) != '\"' || value.charAt(value.length()-1) != '\"')
                 return false;
             else return Objects.equals(op, "contains");
         }
@@ -116,6 +149,11 @@ public class BasicCriterion extends Criterion  {
         }
         return true;
     }
+
+    /**
+     * @param command a String array of the input command (content after the keyword DefineBasicCriterion)
+     * @return the boolean value to check whether this is a legal input to define a new BasicCriterion
+     */
     public static boolean isLegal(String[] command) {
         if (command.length!=4) return false;
         for (String i : command ) {
@@ -170,40 +208,40 @@ public class BasicCriterion extends Criterion  {
             boolean temp = false;
             switch (this.getProperty_name()) {
                 case ("name") : {
-                    temp = t.name.contains(this.getValue().getName());
-                    if (Objects.equals(this.op, "contains") )
+                    temp = t.getName().contains(this.getValue().getName());
+                    if (Objects.equals(this.getOp(), "contains") )
                         return temp;
                     else
                         return !temp;
 
                 }
                 case ("description") : {
-                    temp = t.description.contains(this.getValue().getDescription());
-                    if (Objects.equals(this.op, "contains") )
+                    temp = t.getDescription().contains(this.getValue().getDescription());
+                    if (Objects.equals(this.getOp(), "contains") )
                         return temp;
                     else
                         return !temp;
 
                 }
                 case ("duration") : {
-                    switch (this.op) {
+                    switch (this.getOp()) {
                         case (">") : {
-                            return t.duration > this.getValue().getDuration();
+                            return t.getDuration() > this.getValue().getDuration();
                         }
                         case ("<") : {
-                            return t.duration < this.getValue().getDuration();
+                            return t.getDuration() < this.getValue().getDuration();
                         }
                         case (">=") : {
-                            return t.duration >= this.getValue().getDuration();
+                            return t.getDuration() >= this.getValue().getDuration();
                         }
                         case ("<=") : {
-                            return t.duration <= this.getValue().getDuration();
+                            return t.getDuration() <= this.getValue().getDuration();
                         }
                         case ("==") : {
-                            return t.duration == this.getValue().getDuration();
+                            return t.getDuration() == this.getValue().getDuration();
                         }
                         case ("!=") : {
-                            return t.duration != this.getValue().getDuration();
+                            return t.getDuration() != this.getValue().getDuration();
                         }
                     }
                 }
@@ -211,13 +249,13 @@ public class BasicCriterion extends Criterion  {
                     // Only PrimitiveTask has prerequisites
                     if (t instanceof CompositeTask) return false;
                     LinkedList<Task> cList = new LinkedList<Task>();
-                    LinkedList <Task> tList = ((PrimitiveTask) t).prerequisite;
-                    tList.addAll(((PrimitiveTask) t).IndirectPrerequisite);
+                    LinkedList <Task> tList = ((PrimitiveTask) t).getDirectPrerequisite();
+                    tList.addAll(((PrimitiveTask) t).getIndirectPrerequisite());
 
                     // For this special case, we define "when both criterion and task have empty prerequisites list"
                     // contains is true for all tasks (because empty set is the subset of any set)
                     // !contains (negation) is false for all tasks
-                    if(this.getValue().getPrerequisites().isEmpty() && tList.isEmpty()) return Objects.equals(this.op, "contains");
+                    if(this.getValue().getPrerequisites().isEmpty() && tList.isEmpty()) return Objects.equals(this.getOp(), "contains");
 
                     for (String pre : this.getValue().getPrerequisites()) {
                         if (!TMS.taskExist(pre)) return false;
@@ -226,7 +264,7 @@ public class BasicCriterion extends Criterion  {
 
                     temp = tList.containsAll(cList);
 
-                    if (Objects.equals(this.op, "contains") )
+                    if (Objects.equals(this.getOp(), "contains") )
                         return temp;
                     else
                         return !temp;
@@ -239,8 +277,8 @@ public class BasicCriterion extends Criterion  {
                         if (!TMS.taskExist(sub)) return false;
                         cList.add(TMS.getTask(sub));
                     }
-                    temp = ((CompositeTask) t).subtask.containsAll(cList);
-                    if (Objects.equals(this.op, "contains") )
+                    temp = ((CompositeTask) t).getDirectSubtask().containsAll(cList);
+                    if (Objects.equals(this.getOp(), "contains") )
                         return temp;
                     else
                         return !temp;

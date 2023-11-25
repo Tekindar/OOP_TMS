@@ -20,9 +20,9 @@ public class PrimitiveTask extends Task{
      * @param keywords the input details of a primitive task
      */
     PrimitiveTask(String[] keywords){
-        name = keywords[1];
-        description = keywords[2];
-        duration = new BigDecimal(keywords[3]).doubleValue();
+        setName(keywords[1]);
+        setDescription(keywords[2]);
+        setDuration(new BigDecimal(keywords[3]).doubleValue());
         prerequisite = new LinkedList<>();
         IndirectPrerequisite = new LinkedList<>();
         setSub(false);
@@ -39,9 +39,9 @@ public class PrimitiveTask extends Task{
     void initializeTask(String tasks){
         for(String s:tasks.split(","))prerequisite.add(TMS.getTask(s));
         for(Task t:prerequisite)calculatePrerequisite(t);
-        for(Task t:prerequisite) this.completion = Math.max(this.completion, t.completion);
+        for(Task t:prerequisite) this.completion = Math.max(this.completion, t.getCompletion());
         BigDecimal a = new BigDecimal(Double.toString(this.completion));
-        BigDecimal b = new BigDecimal(Double.toString(this.duration));
+        BigDecimal b = new BigDecimal(Double.toString(this.getDuration()));
         this.completion=a.add(b).doubleValue();
         System.out.println(completion);
     }
@@ -139,7 +139,7 @@ public class PrimitiveTask extends Task{
 
         String[] prs = keywords[4].split(",");
         for(String s:prs) if(!TMS.taskExist(s)) {
-            System.out.println("Illegal Subtasks");
+            System.out.println("Illegal Prerequisites");
             return false;
         }
         return true;

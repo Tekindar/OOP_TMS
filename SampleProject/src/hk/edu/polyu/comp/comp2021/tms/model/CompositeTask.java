@@ -15,18 +15,18 @@ public class CompositeTask extends Task{
     private final LinkedList<Task> AllComSubtask;
 
     /**
-     * Constructor of a composite Task,
+     * Constructer of a composite Task,
      * initialize an instance.
      *
      * @param keywords the input details of a composite task
      */
     CompositeTask(String[] keywords){
-        name = keywords[1];
-        description = keywords[2];
+        setName(keywords[1]);
+        setDescription(keywords[2]);
         subtask = new LinkedList<>();
         AllSubtask = new LinkedList<>();
         AllComSubtask = new LinkedList<>();
-        duration = 0;
+        setDuration(0);
         completion = 0;
         setSub(false);
         for(String s:keywords[3].split(","))subtask.add(TMS.getTask(s));
@@ -40,7 +40,7 @@ public class CompositeTask extends Task{
      */
     void initializeTask(){
         for(Task t: subtask){
-            this.completion = Math.max(this.completion, t.completion);
+            this.completion = Math.max(this.completion, t.getCompletion());
             t.setSub(true);
         }
         for(Task t:subtask) DurationCalculation(t,0,0);
@@ -50,7 +50,7 @@ public class CompositeTask extends Task{
      * recursive method runs from the direct subtask,
      * increase the duration for each primitive task and then
      * go to its prerequisite task.
-     * If the target task is composite, then go to each of its subtasks,
+     * If the target task is compositive, then go to each of its subtasks,
      * If the method runs to a primitive task that is within the composite,
      * we update duration with temporary maximum.
      *
@@ -66,11 +66,11 @@ public class CompositeTask extends Task{
         }
         else {
             BigDecimal a = new BigDecimal(Double.toString(parentTime));
-            BigDecimal b = new BigDecimal(Double.toString(t.duration));
+            BigDecimal b = new BigDecimal(Double.toString(t.getDuration()));
             parentTime=a.add(b).doubleValue();
             if(AllSubtask.contains(t))tempHigh = parentTime;
             for(Task pr:((PrimitiveTask)t).getDirectPrerequisite()) DurationCalculation(pr, parentTime, tempHigh);
-            if(((PrimitiveTask)t).getDirectPrerequisite().isEmpty()) this.duration = Math.max(this.duration,tempHigh);
+            if(((PrimitiveTask)t).getDirectPrerequisite().isEmpty()) this.setDuration(Math.max(this.getDuration(),tempHigh));
         }
     }
 

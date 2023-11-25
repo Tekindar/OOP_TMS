@@ -7,7 +7,7 @@ import java.util.Set;
 
 /**
  * This class is a system that receives user input and
- * commit operatation based on the inputs.
+ * commit operation based on the inputs.
  *
  * @author ..
  */
@@ -17,7 +17,7 @@ public class TMS {
     private int TaskNumber;
 
     /**
-     * Constructer of the Task Management System,
+     * Constructor of the Task Management System,
      * initialize an instance of TMS with a new linkedlist of tasks.
      */
     public TMS(){
@@ -45,7 +45,7 @@ public class TMS {
 
     /**
      * the method removes duplications of prerequisite inputs and
-     * involks validation, if input is valid, then create the task.
+     * involves validation, if input is valid, then create the task.
      *
      * @param keywords the input details of a primitive task
      */

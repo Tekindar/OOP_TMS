@@ -14,7 +14,7 @@ public class PrimitiveTask extends Task{
     private final LinkedList<Task> IndirectPrerequisite;
 
     /**
-     * Constructer of a primitive Task,
+     * Constructor of a primitive Task,
      * initialize an instance.
      *
      * @param keywords the input details of a primitive task

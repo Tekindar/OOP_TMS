@@ -95,7 +95,16 @@ public class TMSTest {
         String testPrerequisite1 = "CreatePrimitiveTask test4 test 1 ";
         String testPrerequisite2 = "CreatePrimitiveTask test5 test 1 p1";
         String testSubtask1 = "CreateCompositeTask test6 test p1,p2";
-
+        String other1 = "CreatePrimitiveTask test7 test 0.3";
+        String other2 = "CreateCompositeTask test8  ,";
+        String other3 = "CreateCompositeTask 1name test p1,p2";
+        String other4 = "CreatePrimitiveTask p- this-is-p1 0.5 ,";
+        String other5 = "CreateCompositeTask c- this-is-p1 ,";
+        String other6 = "CreateCompositeTask a";
+        String other7 = "CreateCompositeTask a .p ,";
+        String other8 = "CreateCompositeTask a b ,";
+        String other9 = "CreatePrimitiveTask b  1 ,";
+        String other10 = "CreatePrimitiveTask c d e ,";
 
 
         // legal input
@@ -107,15 +116,20 @@ public class TMSTest {
         String c1 = "CreateCompositeTask c1 this-is-c1 p1,p4";
         String c2 = "CreateCompositeTask c2 this-is-c2 p3,p5";
         String c3 = "CreateCompositeTask c3 this-is-c3 c1,c2";
+        String p6 = "CreatePrimitiveTask p6 this-is-p6 1 c3";
+        String fail1 = "CreateCompositeTask c3 this-is-c3 c1,c2";
+        String fail2 = "CreatePrimitiveTask p1 this-is-p1 0.5 ,";
+        String fail3 = "CreateCompositeTask c4 this-is-c4 c1,c2;";
 
 
 
 
 
         String[] temp = {testName1,testName2,testDescription,testDuration1,testDuration2,
-                testPrerequisite1,testPrerequisite2,testSubtask1};
+                testPrerequisite1,testPrerequisite2,testSubtask1,other1,other2,other3,
+                other4,other5,other6,other7,other8,other9,other10};
         wrongTaskInputs.addAll(Arrays.asList(temp));
-        String[] temp2 = {p1,p2,p3,p4,p5,c1,c2,c3};
+        String[] temp2 = {p1,p2,p3,p4,p5,c1,c2,c3,fail1,fail2,fail3,p6};
         correctTaskInputs.addAll(Arrays.asList(temp2));
     }
 
@@ -166,7 +180,11 @@ public class TMSTest {
         for(String s:correctTaskInputs){
             run(s);
         }
-        Assert.assertEquals(8,tms.getSize());
+        Assert.assertEquals(9,tms.getSize());
+        Assert.assertEquals(2, ((CompositeTask)TMS.getTask("c1")).getAllSubtask().size());
+        Assert.assertEquals(0, ((CompositeTask)TMS.getTask("c1")).getAllCompositeSubtask().size());
+        Assert.assertEquals(1,((PrimitiveTask)TMS.getTask("p3")).getIndirectPrerequisite().size());
+        Assert.assertEquals("this-is-p1",TMS.getTask("p1").getDescription());
     }
 
 

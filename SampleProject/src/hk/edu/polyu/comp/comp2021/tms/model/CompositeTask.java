@@ -40,7 +40,11 @@ public class CompositeTask extends Task{
      */
     void initializeTask(){
         for(Task t: subtask){
+<<<<<<< Updated upstream
             this.completion = Math.max(this.completion, t.completion);
+=======
+            setCompletion(Math.max(this.completion, t.getCompletion()));
+>>>>>>> Stashed changes
             t.setSub(true);
         }
         for(Task t:subtask) DurationCalculation(t,0,0);
